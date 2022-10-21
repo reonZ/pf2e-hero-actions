@@ -18,6 +18,4 @@ The GM has two options for the draws:
 
 -   Random draw where characters could end up receiving the same `Hero Action` than another character or even multiple times the same one themselves.
 
--   A unique global pool from which characters will all **Draw**, no duplicates until the whole pool is emptied.
-
-The GM also has access to a setting menu showing which `Hero Actions` have already be drawn, reset the draw pool or individually remove/re-add `Hero Actions` from it.
+-   A unique deck table from which characters will all **Draw**, no duplicates until the whole pool is emptied (the table will automatically be created in the world if none exist).
