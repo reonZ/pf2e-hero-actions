@@ -1,0 +1,38 @@
+<h3 class="header">
+    {{pf2eHeroActions 'HeroActions.Label'}}
+    <button type="button" title="{{pf2eHeroActions 'HeroActions.TBD'}}">
+        <i class="fas fa-question"></i>
+    </button>
+</h3>
+<ol class="actions-list item-list directory-list heroActions-list"{{#unless canUse}} data-discard="{{diff}}"{{/unless}}>
+    {{#each list as |action|}}
+    <li class="item action" data-id="{{action._id}}">
+        <div class="item-name">
+            <div data-action="display" class="item-image" style="background-image: url(systems/pf2e/icons/actions/Passive.webp)">
+                <i class="fas fa-comment-alt"></i>
+            </div>
+            <h4 data-action="expand">{{action.name}}</h4>
+        </div>
+        {{#if @root.owner}}
+        <div class="item-controls">
+            {{#if @root.canUse}}
+            <button type="button" data-action="use">{{pf2eHeroActions 'HeroActions.Action.Use'}}</button>
+            {{else}}
+            <button type="button" data-action="discard">{{pf2eHeroActions 'HeroActions.Action.Discard'}}</button>
+            {{/if}}
+        </div>
+        {{/if}}
+        <div class="item-summary">
+            <div class="item-description"></div>
+        </div>
+    </li>
+    {{/each}}
+    {{#if canDraw}}
+    <button type="button" data-action="draw">{{pf2eHeroActions 'HeroActions.Draw' nb=diff}}</button>
+    {{else if mustDiscard}}
+    <div class="error">{{pf2eHeroActions 'HeroActions.Error' nb=diff}}</div>
+    <button type="button" data-action="discard-selected">
+        {{pf2eHeroActions 'HeroActions.Discard' nb=diff}}
+    </button>
+    {{/if}}
+</ol>

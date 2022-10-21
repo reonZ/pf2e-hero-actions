@@ -1,0 +1,50 @@
+{
+    "pf2e-hero-actions": {
+        "templates": {
+            "HeroActions": {
+                "Action": {
+                    "Use": "Use",
+                    "Discard": "Discard"
+                },
+                "Cards": {
+                    "Draw": {
+                        "Flavor": "Has Drawn ({nb}) Hero Action"
+                    },
+                    "Use": {
+                        "Flavor": "Spends a Hero Point to use"
+                    },
+                    "Discard": {
+                        "Flavor": "Has Discarded ({nb}) Hero Action"
+                    }
+                },
+                "Discard": "Discard Selected ({nb}) Hero Action",
+                "Draw": "Draw ({nb}) Hero Action",
+                "Error": "You must discard ({nb}) Hero Action",
+                "Label": "Hero Actions",
+                "TBD": "To be determined"
+            }
+        },
+        "Table": {
+            "Name": "Hero Actions Deck (do not delete)",
+            "MissingWarn": "There are no Hero Deck table in this world, whine to your GM about it.",
+            "MissingError": "Something went wrong when trying to access/create the Hero Deck table.",
+            "NoFormula": "The Hero Deck table has no formula, tell your GM he messed up.",
+            "Replacement": "The Hero Deck table has 'Draw with Replacement' enabled, ask your GM to turn it off. "
+        },
+        "settings": {
+            "Variant": {
+                "Name": "Hero Actions Variant Rules",
+                "Hint": "Support the use of Hero Deck Actions in conjunction with the Hero Points. Changing this setting will reset the unique deck.",
+                "Choices": {
+                    "none": "Do not use Hero Actions",
+                    "random": "Use Random Draws",
+                    "unique": "Use Unique Deck"
+                }
+            },
+            "DeckId": {
+                "Name": "Hero Deck Table ID",
+                "Hint": "ID of the Unique Deck table, manually change this only if more than one Hero Deck table exists in your world, if no table is found in the world, one will automatically be created."
+            }
+        }
+    }
+}
