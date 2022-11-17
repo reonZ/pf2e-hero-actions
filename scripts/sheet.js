@@ -1,25 +1,24 @@
-import { getHeroActionsIndexes } from './actor.js'
+import { drawHeroAction, getHeroActionDetails, getHeroActions, setHeroActions } from './hero-actions.js'
+import { chatUUID, error, setFlag, templatePath, warn } from './utils/foundry.js'
 import MODULE_ID from './utils/module.js'
-import {
-    drawRandomHeroAction,
-    drawUniqueHeroAction,
-    formatHeroActionUUID,
-    getHeroActionDetails,
-    isHeroActionVariantUnique,
-} from './hero-actions.js'
-import { getSetting, setFlag, templatePath } from './utils/foundry.js'
-
-/** @typedef {import('./hero-actions.js').HeroActionIndex} HeroActionIndex */
 
 /**
  * @param {CharacterSheetPF2e} sheet
  * @param {JQuery} $html
  */
-export async function onRenderCharacterSheetPF2e(sheet, $html) {
+export async function renderCharacterSheetPF2e(sheet, $html) {
     const actor = sheet.actor
-    if (actor.pack || !actor.id || !game.actors.has(actor.id) || getSetting('Variant') === 'none') return
+    if (actor.pack || !actor.id || !game.actors.has(actor.id)) return
+    await addHeroActions($html, actor)
+    addEvents($html, actor)
+}
 
-    const actions = getHeroActionsIndexes(actor)
+/**
+ * @param {JQuery} $html
+ * @param {CharacterPF2e} actor
+ */
+async function addHeroActions($html, actor) {
+    const actions = getHeroActions(actor)
     const diff = actor.heroPoints.value - actions.length
     const isOwner = actor.isOwner
 
@@ -32,19 +31,17 @@ export async function onRenderCharacterSheetPF2e(sheet, $html) {
         diff: Math.abs(diff),
     })
 
-    const strikesList = $html
+    $html
         .find('.tab[data-tab="actions"] .actions-panel[data-tab="encounter"] > .strikes-list:not(.skill-action-list)')
         .first()
-    strikesList.after(template)
-
-    addEventToTemplate(actor, $html)
+        .after(template)
 }
 
 /**
- * @param {CharacterPF2e} actor
  * @param {JQuery} $html
+ * @param {CharacterPF2e} actor
  */
-function addEventToTemplate(actor, $html) {
+function addEvents($html, actor) {
     const $list = $html.find('.tab.actions .heroActions-list')
     $list.find('[data-action=draw]').on('click', event => onClickHeroActionsDraw(actor, event))
     $list.find('[data-action=expand]').on('click', onClickHeroActionExpand)
@@ -52,38 +49,6 @@ function addEventToTemplate(actor, $html) {
     $list.find('[data-action=display]').on('click', event => onClickHeroActionDisplay(actor, event))
     $list.find('[data-action=discard]').on('click', onClickHeroActionDiscard)
     $list.find('[data-action=discard-selected]').on('click', () => onClickHeroActionsDiscard(actor, $html))
-}
-
-/**
- * @param {CharacterPF2e} actor
- * @param {JQuery.ClickEvent} event
- */
-async function onClickHeroActionsDraw(actor, event) {
-    event.preventDefault()
-
-    const actions = getHeroActionsIndexes(actor)
-    const drawFunction = isHeroActionVariantUnique() ? drawUniqueHeroAction : drawRandomHeroAction
-
-    const nb = actor.heroPoints.value - actions.length
-    const drawn = /** @type {HeroActionIndex[]} */ ([])
-    for (let i = 0; i < nb; i++) {
-        const index = await drawFunction()
-        if (!index) return
-        actions.push(index)
-        drawn.push(index)
-    }
-
-    setFlag(
-        actor,
-        'heroActions',
-        actions.map(x => x._id)
-    )
-
-    const template = templatePath('draw-card.html')
-    ChatMessage.create({
-        content: await renderTemplate(template, { actions: drawn.map(x => formatHeroActionUUID(x)) }),
-        speaker: ChatMessage.getSpeaker({ actor }),
-    })
 }
 
 /** @param {JQuery.ClickEvent<any, any, HTMLElement>} event */
@@ -94,10 +59,11 @@ async function onClickHeroActionExpand(event) {
     const $summary = $action.find('.item-summary')
 
     if (!$summary.hasClass('loaded')) {
-        const action = await getHeroActionDetails(/** @type {string} */ ($action.attr('data-id')))
-        if (!action) return
+        const uuid = /** @type {string} */ ($action.attr('data-uuid'))
+        const details = await getHeroActionDetails(uuid)
+        if (!details) return
 
-        const text = await TextEditor.enrichHTML(action.description, { async: true })
+        const text = await TextEditor.enrichHTML(details.description, { async: true })
 
         $summary.find('.item-description').html(text)
         $summary.addClass('loaded')
@@ -110,52 +76,16 @@ async function onClickHeroActionExpand(event) {
  * @param {CharacterPF2e} actor
  * @param {JQuery.ClickEvent<any, any, HTMLElement>} event
  */
-async function onClickHeroActionUse(actor, event) {
-    event.preventDefault()
-
-    const points = actor.heroPoints.value
-    if (points < 1) {
-        ui.notifications.warn('You need at least 1 Hero Point to use a Hero Action')
-        return
-    }
-
-    const id = /** @type {string} */ ($(event.currentTarget).closest('.action').attr('data-id'))
-    const actions = getHeroActionsIndexes(actor)
-
-    const index = actions.findIndex(x => x._id === id)
-    if (index === -1) return
-
-    const action = await getHeroActionDetails(id)
-    if (!action) return
-
-    actions.splice(index, 1)
-
-    actor.update({
-        ['system.resources.heroPoints.value']: points - 1,
-        [`flags.${MODULE_ID}.heroActions`]: actions.map(x => x._id),
-    })
-
-    const template = templatePath('use-card.html')
-    ChatMessage.create({
-        content: await renderTemplate(template, action),
-        speaker: ChatMessage.getSpeaker({ actor }),
-    })
-}
-
-/**
- * @param {CharacterPF2e} actor
- * @param {JQuery.ClickEvent<any, any, HTMLElement>} event
- */
 async function onClickHeroActionDisplay(actor, event) {
     event.preventDefault()
 
-    const id = /** @type {string} */ ($(event.currentTarget).closest('.action').attr('data-id'))
-    const action = await getHeroActionDetails(id)
-    if (!action) return
+    const uuid = /** @type {string} */ ($(event.currentTarget).closest('.action').attr('data-uuid'))
+    const details = await getHeroActionDetails(uuid)
+    if (!details) return error('details.missing')
 
-    const template = templatePath('display-card.html')
+    const template = templatePath('cards/display-card.html')
     ChatMessage.create({
-        content: await renderTemplate(template, action),
+        content: await renderTemplate(template, details),
         speaker: ChatMessage.getSpeaker({ actor }),
     })
 }
@@ -176,31 +106,94 @@ function onClickHeroActionDiscard(event) {
 }
 
 /**
- * @param {ActorPF2e} actor
+ * @param {CharacterPF2e} actor
  * @param {JQuery} $html
  */
 async function onClickHeroActionsDiscard(actor, $html) {
     const $discarded = $html.find('.tab.actions .heroActions-list .action.discarded')
-    const ids = $discarded.toArray().map(x => x.dataset.id)
-    const actions = getHeroActionsIndexes(actor)
+    const uuids = $discarded.toArray().map(x => x.dataset.uuid)
+    const actions = getHeroActions(actor)
+    const removed = /** @type {HeroAction[]} */ ([])
 
-    const removed = /** @type {HeroActionIndex[]} */ ([])
-    for (const id of ids) {
-        const index = actions.findIndex(x => x._id === id)
+    for (const uuid of uuids) {
+        const index = actions.findIndex(x => x.uuid === uuid)
         if (index === -1) continue
         removed.push(actions[index])
         actions.splice(index, 1)
     }
 
-    setFlag(
-        actor,
-        'heroActions',
-        actions.map(x => x._id)
-    )
+    setHeroActions(actor, actions)
 
-    const template = templatePath('discard-card.html')
+    const template = templatePath('cards/discard-card.html')
     ChatMessage.create({
-        content: await renderTemplate(template, { actions: removed.map(x => formatHeroActionUUID(x)) }),
+        content: await renderTemplate(template, { actions: removed.map(x => chatUUID(x.uuid, x.name)) }),
         speaker: ChatMessage.getSpeaker({ actor }),
     })
+}
+
+/**
+ * @param {CharacterPF2e} actor
+ * @param {JQuery.ClickEvent} event
+ */
+async function onClickHeroActionsDraw(actor, event) {
+    event.preventDefault()
+
+    const actions = getHeroActions(actor)
+    const nb = actor.heroPoints.value - actions.length
+
+    const drawn = /** @type {HeroAction[]} */ ([])
+    for (let i = 0; i < nb; i++) {
+        const action = await drawHeroAction()
+
+        if (action === undefined) continue
+        else if (action === null) return
+
+        actions.push(action)
+        drawn.push(action)
+    }
+
+    if (!drawn.length) return
+
+    setHeroActions(actor, actions)
+
+    const template = templatePath('cards/draw-card.html')
+    ChatMessage.create({
+        content: await renderTemplate(template, { actions: drawn.map(x => chatUUID(x.uuid, x.name)) }),
+        speaker: ChatMessage.getSpeaker({ actor }),
+    })
+}
+
+/**
+ * @param {CharacterPF2e} actor
+ * @param {JQuery.ClickEvent<any, any, HTMLElement>} event
+ */
+async function onClickHeroActionUse(actor, event) {
+    event.preventDefault()
+
+    const points = actor.heroPoints.value
+    if (points < 1) return warn('use.noPoints')
+
+    const uuid = /** @type {string} */ ($(event.currentTarget).closest('.action').attr('data-uuid'))
+    const actions = getHeroActions(actor)
+
+    const index = actions.findIndex(x => x.uuid === uuid)
+    if (index === -1) return
+
+    const details = await getHeroActionDetails(uuid)
+    if (!details) error('use.noDetails')
+
+    actions.splice(index, 1)
+
+    if (details) {
+        actor.update({
+            ['system.resources.heroPoints.value']: points - 1,
+            [`flags.${MODULE_ID}.heroActions`]: actions,
+        })
+
+        const template = templatePath('cards/use-card.html')
+        ChatMessage.create({
+            content: await renderTemplate(template, details),
+            speaker: ChatMessage.getSpeaker({ actor }),
+        })
+    } else setFlag(actor, 'heroActions', actions)
 }

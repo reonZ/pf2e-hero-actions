@@ -1,0 +1,24 @@
+#pf2e-hero-actions-create-table {
+    .window-content {
+        .dialog-buttons {
+            margin-top: 0.8em;
+        }
+    }
+}
+
+#pf2e-hero-actions-remove-actions {
+    .window-content {
+        .actor {
+            margin-left: 1em;
+        }
+
+        .dialog-buttons {
+            margin-top: 0.8em;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+        }
+    }
+}

@@ -1,50 +1,79 @@
 {
     "pf2e-hero-actions": {
+        "migrate": {
+            "start": "'{module}' module is checking the world's data, please do not close or refresh the tab/browser.",
+            "end": "'{module}' module is now done with the data checking.",
+            "updated": "'{module}' is done migrating to version {version}"
+        },
         "templates": {
-            "HeroActions": {
-                "Action": {
-                    "Use": "Use",
-                    "Discard": "Discard"
-                },
-                "Cards": {
-                    "Draw": {
-                        "Flavor": "Has Drawn ({nb}) Hero Action"
+            "update": {
+                "title": "What's new?",
+                "version": "Version {version}"
+            },
+            "createTable": {
+                "choice": {
+                    "title": "Table creation options",
+                    "create": "Create",
+                    "cancel": "Cancel",
+                    "types": {
+                        "group": "Type of table:",
+                        "default": "Default",
+                        "custom": "Custom"
                     },
-                    "Use": {
-                        "Flavor": "Spends a Hero Point to use"
-                    },
-                    "Discard": {
-                        "Flavor": "Has Discarded ({nb}) Hero Action"
+                    "draw": {
+                        "group": "Draw Options:",
+                        "random": "Random",
+                        "unique": "Unique"
                     }
                 },
-                "Discard": "Discard Selected ({nb}) Hero Action",
-                "Draw": "Draw ({nb}) Hero Action",
-                "Error": "You must discard ({nb}) Hero Action",
-                "Label": "Hero Actions",
-                "TBD": "To be determined"
-            }
-        },
-        "Table": {
-            "Name": "Hero Actions Deck (do not delete)",
-            "MissingWarn": "There are no Hero Deck table in this world, whine to your GM about it.",
-            "MissingError": "Something went wrong when trying to access/create the Hero Deck table.",
-            "NoFormula": "The Hero Deck table has no formula, tell your GM he messed up.",
-            "Replacement": "The Hero Deck table has 'Draw with Replacement' enabled, ask your GM to turn it off. "
-        },
-        "settings": {
-            "Variant": {
-                "Name": "Hero Actions Variant Rules",
-                "Hint": "Support the use of Hero Deck Actions in conjunction with the Hero Points. Changing this setting will reset the unique deck.",
-                "Choices": {
-                    "none": "Do not use Hero Actions",
-                    "random": "Use Random Draws",
-                    "unique": "Use Unique Deck"
+                "default": {
+                    "confirm": {
+                        "title": "Default Table Confirm?",
+                        "content": "<p>A default table already exists in this world, would you like to override it or create a new one ?</p>"
+                    }
                 }
             },
-            "DeckId": {
-                "Name": "Hero Deck Table ID",
-                "Hint": "ID of the Unique Deck table, manually change this only if more than one Hero Deck table exists in your world, if no table is found in the world, one will automatically be created."
+            "removeActions": {
+                "title": "Remove Hero Actions from Characters",
+                "remove": "Remove",
+                "cancel": "Cancel",
+                "all": "All",
+                "noSelection": "No Character were selected.",
+                "removed": "Hero Actions were removed on selected Character(s)."
+            },
+            "heroActions": {
+                "action": {
+                    "use": "Use",
+                    "discard": "Discard"
+                },
+                "cards": {
+                    "draw.flavor": "Has Drawn ({nb}) Hero Action",
+                    "use.flavor": "Spends a Hero Point to use",
+                    "discard.flavor": "Has Discarded ({nb}) Hero Action"
+                },
+                "discard": "Discard Selected ({nb}) Hero Action",
+                "draw": "Draw ({nb}) Hero Action",
+                "error": "You must discard ({nb}) Hero Action",
+                "label": "Hero Actions",
+                "tbd": "To be determined"
             }
+        },
+        "table": {
+            "name": "Hero Actions Deck (do not delete)",
+            "description": "Table for Hero Actions used in consort with the Hero Points.",
+            "noFormula": "The Hero Deck table has no formula, tell your GM he messed up.",
+            "drawError": "An error occurred during the draw, most likely the table contains non-conform results."
+        },
+        "settings": {
+            "tableUUID": {
+                "name": "Table UUID",
+                "hint": "Unique ID of the Deck Table. To get the UUID of a table (in a compendium or in the Rollable Tables directory), simply open the table and Right-Click on 📔 next to its name. If left empty, the first Hero Deck table found in your world will be used, if none, then the default compendium table will be used instead."
+            }
+        },
+        "use": {
+            "noPoints": "You need at least 1 Hero Point to use a Hero Action.",
+            "noAction": "Could not find this action.",
+            "noDetails": "Could not find the details for this Hero Action."
         }
     }
 }

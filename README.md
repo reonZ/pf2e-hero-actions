@@ -14,8 +14,36 @@ It works as follow:
 
 -   Otherwise the player will have the opportunity to **Use** any `Hero Actions` that are available to them, doing so will also spend one `Hero Point` from the character pool.
 
-The GM has two options for the draws:
+## Unique draw pool
 
--   Random draw where characters could end up receiving the same `Hero Action` than another character or even multiple times the same one themselves.
+By default, characters will draw randomly from a `hero Action` table without regard for which actions have already been drawn before.
 
--   A unique deck table from which characters will all **Draw**, no duplicates until the whole pool is emptied (the table will automatically be created in the world if none exist).
+If you want to have an unique action pool from which the actions are "removed" on draw until the pool is emptied (at which point, the pool will be refilled), you need to have a physical `Table` in your world.
+
+Simply import the table from the compendium and uncheck the `Draw With Replacement?` option.
+
+## Custom table
+
+You can also have your own `Hero Actions` and table to draw them, to do so, you will need valid journal entries (in your world or in a compendium) and a table used to draw them.
+
+![](./readme/settings.webp)
+
+Because the module cannot infer which table you are using in the case of a custom table, you will need to provide its UUID manually in the settings, to do so, open your table and `Right + Click` on the 📔 next to its name in the title bar, this will copy its UUID to your clipboard.
+
+## Table Creation Macro
+
+![](./readme/create.webp)
+
+A macro has been added to the compendium to help you setup up your table.
+
+You will be prompted with the option to create a `Default` or `Custom` table and if this table should or not use the `Unique Draw` feature.
+
+When using that macro, the table will be created into your world with an obvious name and its UUID will also automatically be added to the settings.
+
+## Remove Hero Actions Macro
+
+![](./readme/remove.webp)
+
+A macro has been added to the compendium to help you remove all the actions present on the `Characters` of your world.
+
+You will be prompted with the list of the `Characters` from whom you want the actions to be removed.
