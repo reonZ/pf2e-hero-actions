@@ -28,9 +28,9 @@ You can also have your own `Hero Actions` and table to draw them, to do so, you 
 
 ![](./readme/settings.webp)
 
-Because the module cannot infer which table you are using in the case of a custom table, you will need to provide its UUID manually in the settings, to do so, open your table and `Right + Click` on the 📔 next to its name in the title bar, this will copy its UUID to your clipboard.
+Because the module cannot infer which table you are using in the case of a custom table, you will need to provide its UUID manually in the settings, to do so, open your table and `Right-Click` on the 📔 next to its name in the title bar, this will copy its UUID to your clipboard.
 
-## Table Creation Macro
+## Macro: Table Creation
 
 ![](./readme/create.webp)
 
@@ -40,7 +40,7 @@ You will be prompted with the option to create a `Default` or `Custom` table and
 
 When using that macro, the table will be created into your world with an obvious name and its UUID will also automatically be added to the settings.
 
-## Remove Hero Actions Macro
+## Macro: Remove Hero Actions
 
 ![](./readme/remove.webp)
 
