@@ -1,14 +1,40 @@
 {
     "pf2e-hero-actions": {
-        "migrate": {
-            "start": "'{module}' module is checking the world's data, please do not close or refresh the tab/browser.",
-            "end": "'{module}' module is now done with the data checking.",
-            "updated": "'{module}' is done migrating to version {version}"
+        "trade-request": {
+            "title": "Trade Request",
+            "header": "The character {sender} wants to trade with {receiver}",
+            "give": "Offers: {give}",
+            "want": "Wants: {want}",
+            "accept": "Would you like to accept the deal?"
         },
+        "trade-success": {
+            "header": "Traded with {name}",
+            "offer": "Offered: {offer}",
+            "receive": "Received: {receive}"
+        },
+        "actions-discard": {
+            "header": "Has Discarded ({nb}) Hero Action"
+        },
+        "actions-draw": {
+            "header": "Has Drawn ({nb}) Hero Action"
+        },
+        "actions-use": {
+            "header": "Spends a Hero Point to use"
+        },
+        "trade-rejected": "Your trade for Hero Action has been rejected by {name}.",
+        "trade-error": "An error occured during the Hero Action trade.",
+        "no-points": "You need to discard ({nb}) Hero Action before you can engage in a trade.",
+        "no-action": "You don't have any Hero Action to trade.",
         "templates": {
-            "update": {
-                "title": "What's new?",
-                "version": "Version {version}"
+            "trade": {
+                "title": "Trade Hero Action",
+                "select": "Select the character to trade with",
+                "no-target": "Target could not be found",
+                "no-select": "Please select one Hero Action to give and one to receive.",
+                "no-user": "The target has no owner or their are not online.",
+                "error": "An error occured during the trade. Most likely a Hero Action was missing.",
+                "send": "Send",
+                "cancel": "Cancel"
             },
             "createTable": {
                 "choice": {
@@ -46,16 +72,12 @@
                     "use": "Use",
                     "discard": "Discard"
                 },
-                "cards": {
-                    "draw.flavor": "Has Drawn ({nb}) Hero Action",
-                    "use.flavor": "Spends a Hero Point to use",
-                    "discard.flavor": "Has Discarded ({nb}) Hero Action"
-                },
                 "discard": "Discard Selected ({nb}) Hero Action",
                 "draw": "Draw ({nb}) Hero Action",
                 "error": "You must discard ({nb}) Hero Action",
                 "label": "Hero Actions",
-                "tbd": "To be determined"
+                "tbd": "To be determined",
+                "trade": "Trade"
             }
         },
         "table": {
@@ -68,6 +90,10 @@
             "tableUUID": {
                 "name": "Table UUID",
                 "hint": "Unique ID of the Deck Table. To get the UUID of a table (in a compendium or in the Rollable Tables directory), simply open the table and Right-Click on 📔 next to its name. If left empty, the first Hero Deck table found in your world will be used, if none, then the default compendium table will be used instead."
+            },
+            "trade": {
+                "name": "Allow Trade",
+                "hint": "When enabled, players will be able to trade action with each others."
             }
         },
         "use": {

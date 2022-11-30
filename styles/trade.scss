@@ -1,0 +1,65 @@
+[id^='pf2e-hero-actions-trade-'] {
+    --action-height: 24px;
+
+    .header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5em;
+    }
+
+    .actions {
+        --padding: 6px;
+
+        display: grid;
+        grid-template-columns: 1fr 40px 1fr;
+        flex-basis: 93px;
+        gap: 6px;
+        border-top: 1px solid var(--color-border-light-primary);
+        border-bottom: 1px solid var(--color-border-light-highlight);
+        padding-block: var(--padding);
+        margin-block: 0.5em;
+    }
+
+    .action {
+        display: flex;
+        align-items: baseline;
+        padding-block: 4px;
+
+        label {
+            cursor: pointer;
+        }
+
+        input {
+            margin-inline: 0.3em;
+        }
+    }
+
+    .right .action {
+        justify-content: end;
+    }
+
+    .exchange {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2em;
+        border-left: 1px solid var(--color-border-light-primary);
+        border-right: 1px solid var(--color-border-light-highlight);
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1em;
+    }
+
+    button {
+        flex: 0 0 180px;
+    }
+
+    hr {
+        width: 100%;
+        flex: 0;
+    }
+}

@@ -1,8 +1,14 @@
 <h3 class="header">
     {{pf2eHeroActions 'heroActions.label'}}
+    {{#if canTrade}}
+    <button type="button" data-action="hero-actions-trade">
+        <i class="fas fa-right-left"></i> {{pf2eHeroActions 'heroActions.trade'}}
+    </button>
+    {{else}}
     <button type="button" title="{{pf2eHeroActions 'heroActions.tbd'}}">
         <i class="fas fa-question"></i>
     </button>
+    {{/if}}
 </h3>
 <ol class="actions-list item-list directory-list heroActions-list"{{#unless canUse}} data-discard="{{diff}}"{{/unless}}>
     {{#each list as |action|}}

@@ -1,5 +1,9 @@
-import { createCustomActionsTable, createDefautActionsTable, getDefaultWorldTable, getTableSource } from './hero-actions.js'
-import { info, setFlag, setSetting, subLocalize, templatePath, warn } from './utils/foundry.js'
+import { setFlag } from './@utils/foundry/flags'
+import { subLocalize } from './@utils/foundry/i18n'
+import { info, warn } from './@utils/foundry/notifications'
+import { templatePath } from './@utils/foundry/path'
+import { setSetting } from './@utils/foundry/settings'
+import { createCustomActionsTable, createDefautActionsTable, getDefaultWorldTable, getTableSource } from './actions'
 
 export const CREATE_TABLE_UUID = 'Compendium.pf2e-hero-actions.macros.SUXi4nhdJb8vZk58'
 
@@ -10,16 +14,15 @@ const localizeRemove = subLocalize('templates.removeActions')
 export async function removeHeroActions() {
     const template = templatePath('dialogs/remove-actions.html')
 
-    /** @type {Record<string, DialogButton>} */
-    const buttons = {
+    const buttons: Record<string, DialogButton> = {
         yes: {
             label: localizeRemove('remove'),
             icon: '<i class="fas fa-trash"></i>',
-            callback: $html =>
-                $html
-                    .find('input[name="actor"]:checked')
+            callback: html =>
+                html
+                    .find<HTMLInputElement>('input[name="actor"]:checked')
                     .toArray()
-                    .map(x => game.actors.get(/** @type {HTMLInputElement} */ (x).value))
+                    .map(x => game.actors.get(x.value))
                     .filter(x => x),
         },
         no: {
@@ -29,15 +32,14 @@ export async function removeHeroActions() {
         },
     }
 
-    /** @type {DialogData} */
-    const data = {
+    const data: DialogData = {
         content: await renderTemplate(template, { actors: game.actors.filter(x => x.type === 'character') }),
         title: localizeRemove('title'),
         buttons,
         default: 'yes',
-        render: $html => {
-            $html.on('change', 'input[name="all"]', () => removeActionsToggleAll($html))
-            $html.on('change', 'input[name="actor"]', () => removeActionsToggleActor($html))
+        render: html => {
+            html.on('change', 'input[name="all"]', () => removeActionsToggleAll(html))
+            html.on('change', 'input[name="actor"]', () => removeActionsToggleActor(html))
         },
         close: () => [],
     }
@@ -54,17 +56,15 @@ export async function removeHeroActions() {
     info('templates.removeActions.removed')
 }
 
-/** @param {JQuery} $html */
-function removeActionsToggleAll($html) {
-    const state = /** @type {HTMLInputElement} */ ($html.find('input[name="all"]')[0]).checked
-    $html.find('input[name="actor"]').prop('checked', state)
+function removeActionsToggleAll(html: JQuery) {
+    const state = html.find<HTMLInputElement>('input[name="all"]')[0].checked
+    html.find('input[name="actor"]').prop('checked', state)
 }
 
-/** @param {JQuery} $html */
-function removeActionsToggleActor($html) {
-    const actors = $html.find('input[name="actor"]')
+function removeActionsToggleActor(html: JQuery) {
+    const actors = html.find('input[name="actor"]')
     const checked = actors.filter(':checked')
-    const all = $html.find('input[name="all"]')
+    const all = html.find('input[name="all"]')
 
     if (actors.length === checked.length) {
         all.prop('checked', true).prop('indeterminate', false)
@@ -80,14 +80,13 @@ function removeActionsToggleActor($html) {
 export async function createTable() {
     const template = templatePath('dialogs/create-table.html')
 
-    /** @type {Record<string, DialogButton>} */
-    const buttons = {
+    const buttons: Record<string, DialogButton> = {
         yes: {
             label: localizeChoice('create'),
             icon: '<i class="fas fa-border-all"></i>',
-            callback: $html => {
-                const type = $html.find('.window-content input[name="type"]:checked').val()
-                const unique = $html.find('.window-content input[name="draw"]:checked').val() === 'unique'
+            callback: html => {
+                const type = html.find('.window-content input[name="type"]:checked').val()
+                const unique = html.find('.window-content input[name="draw"]:checked').val() === 'unique'
                 return { type, unique }
             },
         },
@@ -114,8 +113,7 @@ export async function createTable() {
     else createCustomTable(result.unique)
 }
 
-/** @param {boolean} unique */
-async function createDefaultTable(unique) {
+async function createDefaultTable(unique: boolean) {
     let table = await getDefaultWorldTable()
 
     if (table) {
@@ -135,15 +133,13 @@ async function createDefaultTable(unique) {
     await setTable(table)
 }
 
-/** @param {boolean} unique */
-async function createCustomTable(unique) {
+async function createCustomTable(unique: boolean) {
     const table = await createCustomActionsTable(unique)
     await setTable(table)
     table.sheet?.render(true)
 }
 
-/** @param {RollTable} table */
-async function setTable(table, normalize = false) {
+async function setTable(table: RollTable, normalize = false) {
     if (normalize) await table.normalize()
     await setSetting('tableUUID', table.uuid)
 }

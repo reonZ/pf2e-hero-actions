@@ -9,8 +9,9 @@
             "discord": "Idle#3251"
         }
     ],
+    "socket": true,
     "esmodules": ["scripts/main.js"],
-    "styles": ["styles/sheet.css", "styles/update.css", "styles/dialogs.css"],
+    "styles": ["styles/sheet.css", "styles/trade.css", "styles/dialogs.css"],
     "languages": [
         {
             "lang": "en",

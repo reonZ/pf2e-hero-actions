@@ -1,6 +1,9 @@
 .git/
-releases/
+.parcel-cache/
 node_modules/
+releases/
 @types/
 @types
-*.lock
+ignore.txt
+release.mjs
+setup.mjs

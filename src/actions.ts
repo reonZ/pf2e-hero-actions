@@ -1,20 +1,23 @@
-import { documentUuidFromTableResult, error, getFlag, getSetting, localize, setFlag } from './utils/foundry.js'
+import { getFlag, setFlag } from './@utils/foundry/flags'
+import { localize } from './@utils/foundry/i18n'
+import { error } from './@utils/foundry/notifications'
+import { getSetting } from './@utils/foundry/settings'
+import { documentUuidFromTableResult } from './@utils/foundry/uuid'
 
-const DECK_PACK = 'pf2e.hero-point-deck'
-const TABLE_PACK = 'pf2e.rollable-tables'
-const TABLE_ID = 'zgZoI7h0XjjJrrNK'
-const TABLE_UUID = `Compendium.${TABLE_PACK}.${TABLE_ID}`
-const ICON = 'systems/pf2e/icons/features/feats/heroic-recovery.webp'
+const DECK_PACK = 'pf2e.hero-point-deck' as const
+const TABLE_PACK = 'pf2e.rollable-tables' as const
+const TABLE_ID = 'zgZoI7h0XjjJrrNK' as const
+const TABLE_UUID = `Compendium.${TABLE_PACK}.${TABLE_ID}` as const
+const ICON = 'systems/pf2e/icons/features/feats/heroic-recovery.webp' as const
 
-/** @param {string | undefined} uuid */
-async function getTableFromUuid(uuid) {
+async function getTableFromUuid(uuid: string | undefined) {
     if (!uuid) return undefined
     const table = await fromUuid(uuid)
     return table && table instanceof RollTable ? table : undefined
 }
 
 export async function getDefaultCompendiumTable() {
-    return /** @type {Promise<RollTable>} */ (getTableFromUuid(TABLE_UUID))
+    return /** @type {Promise<RollTable>} */ getTableFromUuid(TABLE_UUID)
 }
 
 export async function getDefaultWorldTable() {
@@ -29,26 +32,22 @@ export async function getDeckTable() {
     return (await getCustomTable()) ?? (await getDefaultWorldTable()) ?? (await getDefaultCompendiumTable())
 }
 
-/** @param {CharacterPF2e} actor */
-export function getHeroActions(actor) {
-    const actions = /** @type {Array<HeroAction | string>} */ (getFlag(actor, 'heroActions') ?? [])
+export function getHeroActions(actor: CharacterPF2e): HeroAction[] {
+    const actions = getFlag<Array<HeroAction | string>>(actor, 'heroActions') ?? []
     const pack = game.packs.get(DECK_PACK)
-    if (!pack) return []
 
-    return /** @type {HeroAction []} */ (
-        actions
-            .map(action => {
-                if (typeof action !== 'string') return action
-                const entry = pack.index.get(action)
-                if (!entry) return undefined
-                return { name: entry.name, uuid: `Compendium.${DECK_PACK}.${entry._id}` }
-            })
-            .filter(x => x)
-    )
+    return actions
+        .map(action => {
+            if (typeof action !== 'string') return action
+            if (!pack) return undefined
+            const entry = pack.index.get(action)
+            if (!entry) return undefined
+            return { name: entry.name, uuid: `Compendium.${DECK_PACK}.${entry._id}` }
+        })
+        .filter(x => x) as HeroAction[]
 }
 
-/** @param {string} uuid */
-export async function getHeroActionDetails(uuid) {
+export async function getHeroActionDetails(uuid: string) {
     const document = await fromUuid(uuid)
     if (!(document instanceof JournalEntry)) return undefined
 
@@ -60,16 +59,11 @@ export async function getHeroActionDetails(uuid) {
     return text ? { name: document.name, description: text } : undefined
 }
 
-/**
- * @param {CharacterPF2e} actor
- * @param {HeroAction[]} actions
- */
-export function setHeroActions(actor, actions) {
+export function setHeroActions(actor: CharacterPF2e, actions: HeroAction[]) {
     return setFlag(actor, 'heroActions', actions)
 }
 
-/** @param {RollTable} [table] */
-export function getTableSource(unique = true, table) {
+export function getTableSource(unique = true, table?: RollTable) {
     const source = {
         name: localize('table.name'),
         replacement: !unique,
@@ -81,20 +75,25 @@ export function getTableSource(unique = true, table) {
 }
 
 export async function createDefautActionsTable(unique = true) {
-    const table = /** @type {RollTable} */ (await fromUuid(TABLE_UUID))
-    const source = getTableSource(unique, table)
-    return /** @type {Promise<RollTable>} */ (RollTable.create(source, { temporary: false }))
+    const table = await fromUuid<RollTable>(TABLE_UUID)
+    const source = getTableSource(unique, table!)
+    return RollTable.create(source, { temporary: false }) as Promise<RollTable>
 }
 
 export function createCustomActionsTable(unique = true) {
     const source = getTableSource(unique)
-    return /** @type {Promise<RollTable>} */ (RollTable.create(source, { temporary: false }))
+    return RollTable.create(source, { temporary: false }) as Promise<RollTable>
 }
 
 export async function drawHeroAction() {
     const table = await getDeckTable()
 
-    if (!table.formula) {
+    if (!table) {
+        error('table.error', true)
+        return undefined
+    }
+
+    if (table.formula) {
         if (game.user.isGM) {
             await table.normalize()
         } else {
@@ -103,8 +102,8 @@ export async function drawHeroAction() {
         }
     }
 
-    if (!table.replacement) {
-        const drawn = table.results.filter(r => !r.drawn)
+    if (table.replacement) {
+        const drawn = table.results.filter(r => !(r as TableResult).drawn)
         if (!drawn.length) await table.resetResults()
     }
 
@@ -112,7 +111,5 @@ export async function drawHeroAction() {
     const uuid = documentUuidFromTableResult(draw)
 
     if (uuid) return { uuid, name: draw.text }
-
-    error('table.error', true)
     return undefined
 }
