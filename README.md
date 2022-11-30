@@ -14,7 +14,7 @@ It works as follow:
 
 -   Otherwise the player will have the opportunity to **Use** any `Hero Actions` that are available to them, doing so will also spend one `Hero Point` from the character pool.
 
-## Unique draw pool
+# Unique draw pool
 
 By default, characters will draw randomly from a `hero Action` table without regard for which actions have already been drawn before.
 
@@ -22,7 +22,7 @@ If you want to have an unique action pool from which the actions are "removed" o
 
 Simply import the table from the compendium and uncheck the `Draw With Replacement?` option.
 
-## Custom table
+# Custom table
 
 You can also have your own `Hero Actions` and table to draw them, to do so, you will need valid journal entries (in your world or in a compendium) and a table used to draw them.
 
@@ -30,7 +30,21 @@ You can also have your own `Hero Actions` and table to draw them, to do so, you 
 
 Because the module cannot infer which table you are using in the case of a custom table, you will need to provide its UUID manually in the settings, to do so, open your table and `Right-Click` on the 📔 next to its name in the title bar, this will copy its UUID to your clipboard.
 
-## Macro: Table Creation
+# Trading
+
+Characters can trade `Hero Action` between each others.
+
+![](./readme/trade.webp)
+
+If the initiating player is the owner of both characters (or is the GM), the trade will automatically be accepted.
+
+![](./readme//request.webp)
+
+The owner of the character traded with will receive a request popup and can accept or refuse the deal offered. If the player is not online, the GM will receive the request instead.
+
+# Macros
+
+## Table Creation
 
 ![](./readme/create.webp)
 
@@ -40,7 +54,7 @@ You will be prompted with the option to create a `Default` or `Custom` table and
 
 When using that macro, the table will be created into your world with an obvious name and its UUID will also automatically be added to the settings.
 
-## Macro: Remove Hero Actions
+## Remove Hero Actions
 
 ![](./readme/remove.webp)
 
