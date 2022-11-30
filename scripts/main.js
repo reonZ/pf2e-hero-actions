@@ -228,10 +228,14 @@ function $d646a5465ba01f71$export$8bd70de60a58c98a(unique = true) {
 async function $d646a5465ba01f71$export$ef847b546007c96a() {
     const table = await $d646a5465ba01f71$export$d5edccdc32c00904();
     if (!table) {
-        (0, $d20bc07084c62caf$export$a3bc9b8ed74fc)("table.error", true);
-        return undefined;
+        (0, $d20bc07084c62caf$export$a3bc9b8ed74fc)("table.drawError", true);
+        return null;
     }
-    if (table.formula) {
+    if (!table.formula) {
+        if (table.compendium) {
+            (0, $d20bc07084c62caf$export$a3bc9b8ed74fc)("table.noFormulaCompendium", true);
+            return null;
+        }
         if (game.user.isGM) await table.normalize();
         else {
             (0, $d20bc07084c62caf$export$a3bc9b8ed74fc)("table.noFormula", true);
