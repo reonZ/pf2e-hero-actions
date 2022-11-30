@@ -89,11 +89,16 @@ export async function drawHeroAction() {
     const table = await getDeckTable()
 
     if (!table) {
-        error('table.error', true)
-        return undefined
+        error('table.drawError', true)
+        return null
     }
 
-    if (table.formula) {
+    if (!table.formula) {
+        if (table.compendium) {
+            error('table.noFormulaCompendium', true)
+            return null
+        }
+
         if (game.user.isGM) {
             await table.normalize()
         } else {

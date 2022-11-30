@@ -84,6 +84,7 @@
             "name": "Hero Actions Deck (do not delete)",
             "description": "Table for Hero Actions used in consort with the Hero Points.",
             "noFormula": "The Hero Deck table has no formula, tell your GM he messed up.",
+            "noFormulaCompendium": "The Hero Deck table has no formula and is a compendium table.",
             "drawError": "An error occurred during the draw, most likely the table contains non-conform results."
         },
         "settings": {
