@@ -50,12 +50,12 @@
         "minimum": "10.286",
         "verified": "10"
     },
-    "version": "2.2.1",
+    "version": "2.2.2",
     "manifestPlusVersion": "1.2.0",
     "url": "https://github.com/reonZ/pf2e-hero-actions",
     "readme": "https://github.com/reonZ/pf2e-hero-actions/blob/master/README.md",
     "manifest": "https://raw.githubusercontent.com/reonZ/pf2e-hero-actions/master/module.json",
-    "download": "https://github.com/reonZ/pf2e-hero-actions/releases/download/2.2.1/module.zip",
+    "download": "https://github.com/reonZ/pf2e-hero-actions/releases/download/2.2.2/module.zip",
     "changelog": "https://github.com/reonZ/pf2e-hero-actions/releases",
     "bugs": "https://github.com/reonZ/pf2e-hero-actions/issues"
 }

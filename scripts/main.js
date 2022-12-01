@@ -137,10 +137,6 @@ function $d20bc07084c62caf$export$a3bc9b8ed74fc(str, arg1, arg2) {
 
 
 
-
-
-
-
 function $3b07b3ae0f2d41b7$export$54f992c69bf0c22c(result) {
     if (result.type === CONST.TABLE_RESULT_TYPES.DOCUMENT) return `${result.documentCollection}.${result.documentId}`;
     if (result.type === CONST.TABLE_RESULT_TYPES.COMPENDIUM) return `Compendium.${result.documentCollection}.${result.documentId}`;
@@ -188,6 +184,29 @@ function $d646a5465ba01f71$export$ca0ac072ddfd6d2c(actor) {
         };
     }).filter((x)=>x);
 }
+async function $d646a5465ba01f71$export$eae9a14e6f1ee538(actor, uuid) {
+    const points = actor.heroPoints.value;
+    if (points < 1) return (0, $d20bc07084c62caf$export$c106dd0671a0fc2d)("use.noPoints");
+    const actions = $d646a5465ba01f71$export$ca0ac072ddfd6d2c(actor);
+    const index = actions.findIndex((x)=>x.uuid === uuid);
+    if (index === -1) return;
+    const details = await $d646a5465ba01f71$export$5b3b73a115a637d0(uuid);
+    if (!details) (0, $d20bc07084c62caf$export$a3bc9b8ed74fc)("use.noDetails");
+    actions.splice(index, 1);
+    if (details) {
+        actor.update({
+            ["system.resources.heroPoints.value"]: points - 1,
+            [(0, $ee65ef5b7d5dd2ef$export$79b67f6e2f31449)("heroActions")]: actions
+        });
+        ChatMessage.create({
+            flavor: `<h4 class="action">${(0, $889355b5c39241f1$export$b3bd0bc58e36cd63)("actions-use.header")}</h4>`,
+            content: `<h2>${details.name}</h2>${details.description}`,
+            speaker: ChatMessage.getSpeaker({
+                actor: actor
+            })
+        });
+    } else (0, $53cf1f1c9c92715e$export$5e165df1e30a1331)(actor, "heroActions", actions);
+}
 async function $d646a5465ba01f71$export$5b3b73a115a637d0(uuid) {
     const document = await fromUuid(uuid);
     if (!(document instanceof JournalEntry)) return undefined;
@@ -232,12 +251,13 @@ async function $d646a5465ba01f71$export$ef847b546007c96a() {
         return null;
     }
     if (!table.formula) {
-        if (table.compendium) {
-            (0, $d20bc07084c62caf$export$a3bc9b8ed74fc)("table.noFormulaCompendium", true);
-            return null;
-        }
-        if (game.user.isGM) await table.normalize();
-        else {
+        if (game.user.isGM) {
+            if (table.compendium) {
+                (0, $d20bc07084c62caf$export$a3bc9b8ed74fc)("table.noFormulaCompendium", true);
+                return null;
+            }
+            await table.normalize();
+        } else {
             (0, $d20bc07084c62caf$export$a3bc9b8ed74fc)("table.noFormula", true);
             return null;
         }
@@ -258,20 +278,26 @@ async function $d646a5465ba01f71$export$ef847b546007c96a() {
 }
 
 
-const $8435b8d847fb3eb7$export$b4a3a1c0b9c3227d = "Compendium.pf2e-hero-actions.macros.SUXi4nhdJb8vZk58";
-const $8435b8d847fb3eb7$var$localizeChoice = (0, $889355b5c39241f1$export$a2435eff6fb7f6c1)("templates.createTable.choice");
-const $8435b8d847fb3eb7$var$localizeDefaultConfirm = (0, $889355b5c39241f1$export$a2435eff6fb7f6c1)("templates.createTable.default.confirm");
-const $8435b8d847fb3eb7$var$localizeRemove = (0, $889355b5c39241f1$export$a2435eff6fb7f6c1)("templates.removeActions");
-async function $8435b8d847fb3eb7$export$b99f288ff121376e() {
+
+
+
+
+
+
+const $e2e1ea6dd3b7d2e1$export$b4a3a1c0b9c3227d = "Compendium.pf2e-hero-actions.macros.SUXi4nhdJb8vZk58";
+const $e2e1ea6dd3b7d2e1$var$localizeChoice = (0, $889355b5c39241f1$export$a2435eff6fb7f6c1)("templates.createTable.choice");
+const $e2e1ea6dd3b7d2e1$var$localizeDefaultConfirm = (0, $889355b5c39241f1$export$a2435eff6fb7f6c1)("templates.createTable.default.confirm");
+const $e2e1ea6dd3b7d2e1$var$localizeRemove = (0, $889355b5c39241f1$export$a2435eff6fb7f6c1)("templates.removeActions");
+async function $e2e1ea6dd3b7d2e1$export$b99f288ff121376e() {
     const template = (0, $ee65ef5b7d5dd2ef$export$bdd507c72609c24e)("dialogs/remove-actions.html");
     const buttons = {
         yes: {
-            label: $8435b8d847fb3eb7$var$localizeRemove("remove"),
+            label: $e2e1ea6dd3b7d2e1$var$localizeRemove("remove"),
             icon: '<i class="fas fa-trash"></i>',
             callback: (html)=>html.find('input[name="actor"]:checked').toArray().map((x)=>game.actors.get(x.value)).filter((x)=>x)
         },
         no: {
-            label: $8435b8d847fb3eb7$var$localizeRemove("cancel"),
+            label: $e2e1ea6dd3b7d2e1$var$localizeRemove("cancel"),
             icon: '<i class="fas fa-times"></i>',
             callback: ()=>[]
         }
@@ -280,12 +306,12 @@ async function $8435b8d847fb3eb7$export$b99f288ff121376e() {
         content: await renderTemplate(template, {
             actors: game.actors.filter((x)=>x.type === "character")
         }),
-        title: $8435b8d847fb3eb7$var$localizeRemove("title"),
+        title: $e2e1ea6dd3b7d2e1$var$localizeRemove("title"),
         buttons: buttons,
         default: "yes",
         render: (html)=>{
-            html.on("change", 'input[name="all"]', ()=>$8435b8d847fb3eb7$var$removeActionsToggleAll(html));
-            html.on("change", 'input[name="actor"]', ()=>$8435b8d847fb3eb7$var$removeActionsToggleActor(html));
+            html.on("change", 'input[name="all"]', ()=>$e2e1ea6dd3b7d2e1$var$removeActionsToggleAll(html));
+            html.on("change", 'input[name="actor"]', ()=>$e2e1ea6dd3b7d2e1$var$removeActionsToggleActor(html));
         },
         close: ()=>[]
     };
@@ -296,11 +322,11 @@ async function $8435b8d847fb3eb7$export$b99f288ff121376e() {
     for (const actor of actors)await (0, $53cf1f1c9c92715e$export$5e165df1e30a1331)(actor, "heroActions", []);
     (0, $d20bc07084c62caf$export$a80b3bd66acc52ff)("templates.removeActions.removed");
 }
-function $8435b8d847fb3eb7$var$removeActionsToggleAll(html) {
+function $e2e1ea6dd3b7d2e1$var$removeActionsToggleAll(html) {
     const state = html.find('input[name="all"]')[0].checked;
     html.find('input[name="actor"]').prop("checked", state);
 }
-function $8435b8d847fb3eb7$var$removeActionsToggleActor(html) {
+function $e2e1ea6dd3b7d2e1$var$removeActionsToggleActor(html) {
     const actors = html.find('input[name="actor"]');
     const checked = actors.filter(":checked");
     const all = html.find('input[name="all"]');
@@ -312,11 +338,11 @@ function $8435b8d847fb3eb7$var$removeActionsToggleActor(html) {
         actors.prop("checked", false);
     } else all.prop("checked", false).prop("indeterminate", true);
 }
-async function $8435b8d847fb3eb7$export$33bbb3ec7652e187() {
+async function $e2e1ea6dd3b7d2e1$export$33bbb3ec7652e187() {
     const template = (0, $ee65ef5b7d5dd2ef$export$bdd507c72609c24e)("dialogs/create-table.html");
     const buttons = {
         yes: {
-            label: $8435b8d847fb3eb7$var$localizeChoice("create"),
+            label: $e2e1ea6dd3b7d2e1$var$localizeChoice("create"),
             icon: '<i class="fas fa-border-all"></i>',
             callback: (html)=>{
                 const type = html.find('.window-content input[name="type"]:checked').val();
@@ -328,14 +354,14 @@ async function $8435b8d847fb3eb7$export$33bbb3ec7652e187() {
             }
         },
         no: {
-            label: $8435b8d847fb3eb7$var$localizeChoice("cancel"),
+            label: $e2e1ea6dd3b7d2e1$var$localizeChoice("cancel"),
             icon: '<i class="fas fa-times"></i>',
             callback: ()=>null
         }
     };
     /** @type {DialogData} */ const data = {
         content: await renderTemplate(template),
-        title: $8435b8d847fb3eb7$var$localizeChoice("title"),
+        title: $e2e1ea6dd3b7d2e1$var$localizeChoice("title"),
         buttons: buttons,
         default: "yes",
         close: ()=>null
@@ -344,31 +370,31 @@ async function $8435b8d847fb3eb7$export$33bbb3ec7652e187() {
         id: "pf2e-hero-actions-create-table"
     });
     if (!result) return;
-    if (result.type === "default") $8435b8d847fb3eb7$var$createDefaultTable(result.unique);
-    else $8435b8d847fb3eb7$var$createCustomTable(result.unique);
+    if (result.type === "default") $e2e1ea6dd3b7d2e1$var$createDefaultTable(result.unique);
+    else $e2e1ea6dd3b7d2e1$var$createCustomTable(result.unique);
 }
-async function $8435b8d847fb3eb7$var$createDefaultTable(unique) {
+async function $e2e1ea6dd3b7d2e1$var$createDefaultTable(unique) {
     let table = await (0, $d646a5465ba01f71$export$f5812c397f4129c1)();
     if (table) {
         const override = await Dialog.confirm({
-            title: $8435b8d847fb3eb7$var$localizeDefaultConfirm("title"),
-            content: $8435b8d847fb3eb7$var$localizeDefaultConfirm("content")
+            title: $e2e1ea6dd3b7d2e1$var$localizeDefaultConfirm("title"),
+            content: $e2e1ea6dd3b7d2e1$var$localizeDefaultConfirm("content")
         });
         if (override) {
             const update = (0, $d646a5465ba01f71$export$2d554aa9f1665e09)(unique);
             await table.update(update);
-            return $8435b8d847fb3eb7$var$setTable(table, true);
+            return $e2e1ea6dd3b7d2e1$var$setTable(table, true);
         }
     }
     table = await (0, $d646a5465ba01f71$export$c3a6fc7ed68f1ff5)(unique);
-    await $8435b8d847fb3eb7$var$setTable(table);
+    await $e2e1ea6dd3b7d2e1$var$setTable(table);
 }
-async function $8435b8d847fb3eb7$var$createCustomTable(unique) {
+async function $e2e1ea6dd3b7d2e1$var$createCustomTable(unique) {
     const table = await (0, $d646a5465ba01f71$export$8bd70de60a58c98a)(unique);
-    await $8435b8d847fb3eb7$var$setTable(table);
+    await $e2e1ea6dd3b7d2e1$var$setTable(table);
     table.sheet?.render(true);
 }
-async function $8435b8d847fb3eb7$var$setTable(table, normalize = false) {
+async function $e2e1ea6dd3b7d2e1$var$setTable(table, normalize = false) {
     if (normalize) await table.normalize();
     await (0, $b29eb7e0eb12ddbc$export$61fd6f1ddd0c20e2)("tableUUID", table.uuid);
 }
@@ -773,28 +799,8 @@ async function $026f2657de0e8ef5$var$onClickHeroActionsDraw(actor, event) {
 }
 async function $026f2657de0e8ef5$var$onClickHeroActionUse(actor, event) {
     event.preventDefault();
-    const points = actor.heroPoints.value;
-    if (points < 1) return (0, $d20bc07084c62caf$export$c106dd0671a0fc2d)("use.noPoints");
     const uuid = $(event.currentTarget).closest(".action").attr("data-uuid");
-    const actions = (0, $d646a5465ba01f71$export$ca0ac072ddfd6d2c)(actor);
-    const index = actions.findIndex((x)=>x.uuid === uuid);
-    if (index === -1) return;
-    const details = await (0, $d646a5465ba01f71$export$5b3b73a115a637d0)(uuid);
-    if (!details) (0, $d20bc07084c62caf$export$a3bc9b8ed74fc)("use.noDetails");
-    actions.splice(index, 1);
-    if (details) {
-        actor.update({
-            ["system.resources.heroPoints.value"]: points - 1,
-            [(0, $ee65ef5b7d5dd2ef$export$79b67f6e2f31449)("heroActions")]: actions
-        });
-        ChatMessage.create({
-            flavor: `<h4 class="action">${(0, $889355b5c39241f1$export$b3bd0bc58e36cd63)("actions-use.header")}</h4>`,
-            content: `<h2>${details.name}</h2>${details.description}`,
-            speaker: ChatMessage.getSpeaker({
-                actor: actor
-            })
-        });
-    } else (0, $53cf1f1c9c92715e$export$5e165df1e30a1331)(actor, "heroActions", actions);
+    (0, $d646a5465ba01f71$export$eae9a14e6f1ee538)(actor, uuid);
 }
 function $026f2657de0e8ef5$export$837044a00d10fb2c() {
     Object.values(ui.windows).forEach((x)=>{
@@ -824,8 +830,10 @@ Hooks.once("ready", ()=>{
     (0, $7d0b581a56a65cc7$export$38fd5ae0f7102bdb)($b013a5dd6d18443e$export$77349932e6536f4d);
     if (!game.user.isGM) return;
     (0, $f13521bdeed07ab3$export$afac0fc6c5fe0d6)().api = {
-        createTable: (0, $8435b8d847fb3eb7$export$33bbb3ec7652e187),
-        removeHeroActions: (0, $8435b8d847fb3eb7$export$b99f288ff121376e)
+        createTable: $e2e1ea6dd3b7d2e1$export$33bbb3ec7652e187,
+        removeHeroActions: $e2e1ea6dd3b7d2e1$export$b99f288ff121376e,
+        getHeroActions: $d646a5465ba01f71$export$ca0ac072ddfd6d2c,
+        useHeroAction: $d646a5465ba01f71$export$eae9a14e6f1ee538
     };
 });
 Hooks.on("renderCharacterSheetPF2e", (0, $026f2657de0e8ef5$export$acdcee5510fda048));
