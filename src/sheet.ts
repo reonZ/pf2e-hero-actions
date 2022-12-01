@@ -1,10 +1,10 @@
-import { getFlag, setFlag } from './@utils/foundry/flags'
+import { getFlag } from './@utils/foundry/flags'
 import { localize } from './@utils/foundry/i18n'
 import { error, warn } from './@utils/foundry/notifications'
-import { flagsUpdatePath, templatePath } from './@utils/foundry/path'
+import { templatePath } from './@utils/foundry/path'
 import { getSetting } from './@utils/foundry/settings'
 import { chatUUID } from './@utils/foundry/uuid'
-import { drawHeroAction, getHeroActionDetails, getHeroActions, setHeroActions } from './actions'
+import { drawHeroAction, getHeroActionDetails, getHeroActions, setHeroActions, useHeroAction } from './actions'
 import { Trade } from './apps/trade'
 
 export async function renderCharacterSheetPF2e(sheet: CharacterSheetPF2e, $html: JQuery) {
@@ -162,33 +162,8 @@ async function onClickHeroActionsDraw(actor: CharacterPF2e, event: JQuery.ClickE
 
 async function onClickHeroActionUse(actor: CharacterPF2e, event: JQuery.ClickEvent<any, any, HTMLElement>) {
     event.preventDefault()
-
-    const points = actor.heroPoints.value
-    if (points < 1) return warn('use.noPoints')
-
     const uuid = $(event.currentTarget).closest('.action').attr('data-uuid')!
-    const actions = getHeroActions(actor)
-
-    const index = actions.findIndex(x => x.uuid === uuid)
-    if (index === -1) return
-
-    const details = await getHeroActionDetails(uuid)
-    if (!details) error('use.noDetails')
-
-    actions.splice(index, 1)
-
-    if (details) {
-        actor.update({
-            ['system.resources.heroPoints.value']: points - 1,
-            [flagsUpdatePath('heroActions')]: actions,
-        })
-
-        ChatMessage.create({
-            flavor: `<h4 class="action">${localize('actions-use.header')}</h4>`,
-            content: `<h2>${details.name}</h2>${details.description}`,
-            speaker: ChatMessage.getSpeaker({ actor }),
-        })
-    } else setFlag(actor, 'heroActions', actions)
+    useHeroAction(actor, uuid)
 }
 
 export function refreshSheets() {

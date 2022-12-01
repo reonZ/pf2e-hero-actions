@@ -61,3 +61,33 @@ When using that macro, the table will be created into your world with an obvious
 A macro has been added to the compendium to help you remove all the actions present on the `Characters` of your world.
 
 You will be prompted with the list of the `Characters` from whom you want the actions to be removed.
+
+# API
+
+A set of functions is exposed from the module to be used by third parties:
+
+```js
+/**
+ * Retrieves the API object containing the funtions
+ */
+game.modules.get('pf2e-hero-actions').api
+```
+
+```js
+/**
+ * @param {CharacterPF2e} actor
+ * @returns {boolean} the actions on the actor
+ */
+function getHeroActions: (actor: CharacterPF2e) => Array<{ uuid: string; name: string }>
+```
+
+```js
+/**
+ * Will consume a hero point and remove the action from the actor
+ * Displaying a ChatMessage with the details
+ *
+ * @param {CharacterPF2e} actor
+ * @param {string} uuid of the action
+ */
+function useHeroAction: (actor: CharacterPF2e, uuid: string) => Promise<void>
+```

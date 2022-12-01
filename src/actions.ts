@@ -1,6 +1,7 @@
 import { getFlag, setFlag } from './@utils/foundry/flags'
 import { localize } from './@utils/foundry/i18n'
-import { error } from './@utils/foundry/notifications'
+import { error, warn } from './@utils/foundry/notifications'
+import { flagsUpdatePath } from './@utils/foundry/path'
 import { getSetting } from './@utils/foundry/settings'
 import { documentUuidFromTableResult } from './@utils/foundry/uuid'
 
@@ -45,6 +46,34 @@ export function getHeroActions(actor: CharacterPF2e): HeroAction[] {
             return { name: entry.name, uuid: `Compendium.${DECK_PACK}.${entry._id}` }
         })
         .filter(x => x) as HeroAction[]
+}
+
+export async function useHeroAction(actor: CharacterPF2e, uuid: string) {
+    const points = actor.heroPoints.value
+    if (points < 1) return warn('use.noPoints')
+
+    const actions = getHeroActions(actor)
+
+    const index = actions.findIndex(x => x.uuid === uuid)
+    if (index === -1) return
+
+    const details = await getHeroActionDetails(uuid)
+    if (!details) error('use.noDetails')
+
+    actions.splice(index, 1)
+
+    if (details) {
+        actor.update({
+            ['system.resources.heroPoints.value']: points - 1,
+            [flagsUpdatePath('heroActions')]: actions,
+        })
+
+        ChatMessage.create({
+            flavor: `<h4 class="action">${localize('actions-use.header')}</h4>`,
+            content: `<h2>${details.name}</h2>${details.description}`,
+            speaker: ChatMessage.getSpeaker({ actor }),
+        })
+    } else setFlag(actor, 'heroActions', actions)
 }
 
 export async function getHeroActionDetails(uuid: string) {
@@ -94,12 +123,11 @@ export async function drawHeroAction() {
     }
 
     if (!table.formula) {
-        if (table.compendium) {
-            error('table.noFormulaCompendium', true)
-            return null
-        }
-
         if (game.user.isGM) {
+            if (table.compendium) {
+                error('table.noFormulaCompendium', true)
+                return null
+            }
             await table.normalize()
         } else {
             error('table.noFormula', true)

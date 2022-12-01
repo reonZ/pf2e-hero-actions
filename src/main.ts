@@ -2,7 +2,8 @@ import { getCurrentModule } from './@utils/foundry/module'
 import { registerSetting } from './@utils/foundry/settings'
 import { registerLocalizeHelper } from './@utils/handlebars'
 import { socketOn } from './@utils/socket'
-import { createTable, removeHeroActions } from './api'
+import { getHeroActions, useHeroAction } from './actions'
+import { createTable, removeHeroActions } from './helpers'
 import { refreshSheets, renderCharacterSheetPF2e } from './sheet'
 import { onTradeAccepted, onTradeError, onTradeRejected, onTradeRequest } from './trade'
 
@@ -31,8 +32,10 @@ Hooks.once('ready', () => {
     if (!game.user.isGM) return
 
     getCurrentModule().api = {
-        createTable: createTable,
-        removeHeroActions: removeHeroActions,
+        createTable,
+        removeHeroActions,
+        getHeroActions,
+        useHeroAction,
     }
 })
 
