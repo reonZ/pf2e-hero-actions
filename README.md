@@ -76,7 +76,7 @@ game.modules.get('pf2e-hero-actions').api
 ```js
 /**
  * @param {CharacterPF2e} actor
- * @returns {boolean} the actions on the actor
+ * @returns {Array<{ uuid: string; name: string }>} the actions on the actor
  */
 function getHeroActions: (actor: CharacterPF2e) => Array<{ uuid: string; name: string }>
 ```
