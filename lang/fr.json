@@ -1,0 +1,106 @@
+{
+    "pf2e-hero-actions": {
+        "trade-request": {
+            "title": "Demande d'échange",
+            "accept": "Voulez-vous accepter l'accord ?",
+            "header": "Le personnage {sender} veut faire un échange avec {receiver}",
+            "give": "Offre : {give}",
+            "want": "Souhaite : {want}"
+        },
+        "trade-rejected": "Votre échange contre une action héroïque a été rejeté par {name}.",
+        "no-action": "Vous n'avez pas d'action(s) héroïque(s) à échanger.",
+        "templates": {
+            "trade": {
+                "no-select": "Veuillez sélectionner une Action héroïque à donner et une à recevoir.",
+                "error": "Une erreur s'est produite pendant l'échange. Il manquait probablement une Action héroïque.",
+                "title": "Échange d'action(s) héroïque(s)",
+                "select": "Sélectionnez le personnage avec lequel vous souhaitez échanger",
+                "no-target": "La cible n'a pas pu être trouvée",
+                "no-user": "La cible n'a pas de propriétaire ou il n'est pas en ligne.",
+                "send": "Envoi",
+                "cancel": "Effacer"
+            },
+            "createTable": {
+                "choice": {
+                    "draw": {
+                        "group": "Options de tirage au sort :",
+                        "random": "Aléatoire",
+                        "unique": "Unique"
+                    },
+                    "title": "Options de création de table",
+                    "create": "Créer",
+                    "cancel": "Effacer",
+                    "types": {
+                        "group": "Type de table :",
+                        "default": "Par défaut",
+                        "custom": "Personnalisée"
+                    }
+                },
+                "default": {
+                    "confirm": {
+                        "content": "<p>Une table par défaut existe déjà dans ce monde, voulez-vous la remplacer ou en créer une nouvelle ?</p>",
+                        "title": "Confirmer la table par défaut ?"
+                    }
+                }
+            },
+            "heroActions": {
+                "draw": "Tirer ({nb}) Action(s) héroïque(s)",
+                "action": {
+                    "use": "Utiliser",
+                    "discard": "Défausser"
+                },
+                "discard": "Défausser ({nb}) action(s) héroïque(s) sélectionnée(s)",
+                "error": "Vous devez défausser ({nb}) Action(s) héroïque(s)",
+                "label": "Actions héroïques",
+                "tbd": "À déterminer",
+                "trade": "Échange"
+            },
+            "removeActions": {
+                "title": "Supprimer les actions héroïques des personnages",
+                "remove": "Retirer",
+                "cancel": "Effacer",
+                "all": "Tout",
+                "noSelection": "Aucun personnage n'a été sélectionné.",
+                "removed": "Les actions héroïques ont été supprimées sur le(s) personnage(s) sélectionné(s)."
+            }
+        },
+        "table": {
+            "description": "Table pour les actions héroïques utilisées en conjonction avec les points d'héroïsme.",
+            "drawError": "Une erreur s'est produite lors du tirage au sort, il est fort probable que la table contienne des résultats non conformes.",
+            "name": "Paquet d'Actions héroïques (ne pas supprimer)",
+            "noFormula": "La table de paquet d'actions héroïques n'a pas de formule, dites à votre MJ qu'il s'est trompé.",
+            "noFormulaCompendium": "La table de paquet d'Actions héroïques n'a pas de formule et est une table compendium."
+        },
+        "settings": {
+            "tableUUID": {
+                "hint": "ID unique de la table du paquet. Pour obtenir l'UUID d'une table (dans un compendium ou dans le répertoire des tables aléatoires), ouvrez simplement la table et faites un clic droit sur 📔 à côté de son nom. Si elle est laissée vide, la première table de Paquet d'actions Héroïques trouvée dans votre monde sera utilisée, s'il n'y en a pas, alors la table par défaut du compendium sera utilisée à la place.",
+                "name": "UUID de la table"
+            },
+            "trade": {
+                "name": "Permettre l'échange",
+                "hint": "Lorsqu'elle sera activée, les joueurs pourront échanger des actions entre eux."
+            }
+        },
+        "trade-success": {
+            "header": "Échangé avec {name}",
+            "offer": "A offert : {offer}",
+            "receive": "A reçu : {receive}"
+        },
+        "actions-discard": {
+            "header": "A écarté ({nb}) action(s) héroïque(s)"
+        },
+        "actions-draw": {
+            "header": "A tiré ({nb}) Action(s) héroïque(s)"
+        },
+        "actions-use": {
+            "header": "Dépense un point d'héroïsme pour utiliser"
+        },
+        "trade-error": "Une erreur s'est produite pendant l'échange de l'action héroïque.",
+        "no-points": "Vous devez défausser ({nb}) Action(s) héroïque(s) avant de pouvoir entamer un échange.",
+        "use": {
+            "noPoints": "Vous avez besoin d'au moins 1 Point héroïque pour utiliser une Action de Héros.",
+            "noAction": "Impossible de trouver cette action.",
+            "noDetails": "Impossible de trouver les détails de cette action héroïque."
+        }
+    }
+}
