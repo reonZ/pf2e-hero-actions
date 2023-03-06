@@ -1,11 +1,11 @@
-import { getFlag } from './@utils/foundry/flags'
-import { localize } from './@utils/foundry/i18n'
-import { error, warn } from './@utils/foundry/notifications'
-import { templatePath } from './@utils/foundry/path'
-import { getSetting } from './@utils/foundry/settings'
-import { chatUUID } from './@utils/foundry/uuid'
+import { Trade } from '@apps/trade'
+import { getFlag } from '@utils/foundry/flags'
+import { localize, subLocalize } from '@utils/foundry/localize'
+import { error, warn } from '@utils/foundry/notification'
+import { templatePath } from '@utils/foundry/path'
+import { getSetting } from '@utils/foundry/settings'
+import { chatUUID } from '@utils/foundry/uuid'
 import { drawHeroAction, getHeroActionDetails, getHeroActions, setHeroActions, useHeroAction } from './actions'
-import { Trade } from './apps/trade'
 
 export async function renderCharacterSheetPF2e(sheet: CharacterSheetPF2e, $html: JQuery) {
     const actor = sheet.actor
@@ -19,7 +19,7 @@ async function addHeroActions(html: JQuery, actor: CharacterPF2e) {
     const diff = actor.heroPoints.value - actions.length
     const isOwner = actor.isOwner
 
-    const template = await renderTemplate(templatePath('sheet.html'), {
+    const template = await renderTemplate(templatePath('sheet.hbs'), {
         owner: isOwner,
         list: actions,
         canUse: diff >= 0 && isOwner,
@@ -27,6 +27,7 @@ async function addHeroActions(html: JQuery, actor: CharacterPF2e) {
         canTrade: getSetting('trade'),
         mustDiscard: diff < 0,
         diff: Math.abs(diff),
+        i18n: subLocalize('templates.heroActions'),
     })
 
     html.find('.tab[data-tab="actions"] .actions-panel[data-tab="encounter"] > .strikes-list:not(.skill-action-list)')
@@ -112,12 +113,12 @@ async function onClickHeroActionsDiscard(actor: CharacterPF2e, html: JQuery) {
     const discarded = html.find('.tab.actions .heroActions-list .action.discarded')
     const uuids = discarded.toArray().map(x => x.dataset.uuid)
     const actions = getHeroActions(actor)
-    const removed = /** @type {HeroAction[]} */ []
+    const removed: HeroAction[] = []
 
     for (const uuid of uuids) {
         const index = actions.findIndex(x => x.uuid === uuid)
         if (index === -1) continue
-        removed.push(actions[index])
+        removed.push(actions[index]!)
         actions.splice(index, 1)
     }
 

@@ -1,8 +1,8 @@
-import { setFlag } from './@utils/foundry/flags'
-import { subLocalize } from './@utils/foundry/i18n'
-import { info, warn } from './@utils/foundry/notifications'
-import { templatePath } from './@utils/foundry/path'
-import { setSetting } from './@utils/foundry/settings'
+import { setFlag } from '@utils/foundry/flags'
+import { subLocalize } from '@utils/foundry/localize'
+import { info, warn } from '@utils/foundry/notification'
+import { templatePath } from '@utils/foundry/path'
+import { setSetting } from '@utils/foundry/settings'
 import { createCustomActionsTable, createDefautActionsTable, getDefaultWorldTable, getTableSource } from './actions'
 
 export const CREATE_TABLE_UUID = 'Compendium.pf2e-hero-actions.macros.SUXi4nhdJb8vZk58'
@@ -12,7 +12,7 @@ const localizeDefaultConfirm = subLocalize('templates.createTable.default.confir
 const localizeRemove = subLocalize('templates.removeActions')
 
 export async function removeHeroActions() {
-    const template = templatePath('dialogs/remove-actions.html')
+    const template = templatePath('dialogs/remove-actions.hbs')
 
     const buttons: Record<string, DialogButton> = {
         yes: {
@@ -33,7 +33,10 @@ export async function removeHeroActions() {
     }
 
     const data: DialogData = {
-        content: await renderTemplate(template, { actors: game.actors.filter(x => x.type === 'character') }),
+        content: await renderTemplate(template, {
+            actors: game.actors.filter(x => x.type === 'character'),
+            i18n: localizeRemove,
+        }),
         title: localizeRemove('title'),
         buttons,
         default: 'yes',
@@ -57,7 +60,7 @@ export async function removeHeroActions() {
 }
 
 function removeActionsToggleAll(html: JQuery) {
-    const state = html.find<HTMLInputElement>('input[name="all"]')[0].checked
+    const state = html.find<HTMLInputElement>('input[name="all"]')[0]!.checked
     html.find('input[name="actor"]').prop('checked', state)
 }
 
@@ -78,7 +81,7 @@ function removeActionsToggleActor(html: JQuery) {
 }
 
 export async function createTable() {
-    const template = templatePath('dialogs/create-table.html')
+    const template = templatePath('dialogs/create-table.hbs')
 
     const buttons: Record<string, DialogButton> = {
         yes: {
@@ -97,9 +100,8 @@ export async function createTable() {
         },
     }
 
-    /** @type {DialogData} */
-    const data = {
-        content: await renderTemplate(template),
+    const data: DialogData = {
+        content: await renderTemplate(template, { i18n: localizeChoice }),
         title: localizeChoice('title'),
         buttons,
         default: 'yes',

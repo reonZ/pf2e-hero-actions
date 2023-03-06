@@ -1,10 +1,10 @@
-import { getCharacterOwner } from '~src/@utils/foundry/actor'
-import { localize } from '~src/@utils/foundry/i18n'
-import { error, warn } from '~src/@utils/foundry/notifications'
-import { templatePath } from '~src/@utils/foundry/path'
-import { getGM, getOwner } from '~src/@utils/foundry/user'
-import { getHeroActions } from '~src/actions'
-import { sendTradeRequest } from '~src/trade'
+import { getHeroActions } from '@src/actions'
+import { sendTradeRequest } from '@src/trade'
+import { getCharacterOwner } from '@utils/foundry/actor'
+import { localize, subLocalize } from '@utils/foundry/localize'
+import { error, warn } from '@utils/foundry/notification'
+import { templatePath } from '@utils/foundry/path'
+import { getFirstGM, getOwner } from '@utils/foundry/user'
 
 export class Trade extends Application {
     private _actor: CharacterPF2e
@@ -18,7 +18,7 @@ export class Trade extends Application {
     static get defaultOptions(): ApplicationOptions {
         return mergeObject(super.defaultOptions, {
             title: localize('templates.trade.title'),
-            template: templatePath('trade.html'),
+            template: templatePath('trade.hbs'),
             width: 600,
             height: 'auto',
         })
@@ -50,6 +50,7 @@ export class Trade extends Application {
             targets: game.actors.filter(x => x.type === 'character' && x.id !== this.actor.id && x.hasPlayerOwner),
             actions: getHeroActions(this.actor),
             targetActions: this.target ? getHeroActions(this.target) : [],
+            i18n: subLocalize('templates.trade'),
         })
     }
 
@@ -87,7 +88,7 @@ export class Trade extends Application {
             return
         }
 
-        let user = getCharacterOwner(this.target, true) ?? getOwner(this.target, true) ?? getGM(true)
+        let user = getCharacterOwner(this.target, true) ?? getOwner(this.target, true) ?? getFirstGM()
         if (!user) {
             warn('templates.trade.no-user')
             return
@@ -110,7 +111,7 @@ export class Trade extends Application {
     }
 
     async #onDescription(event: JQuery.ClickEvent<any, any, HTMLElement>) {
-        const uuid = $(event.currentTarget).siblings('input').val() as string
+        const uuid = $(event.currentTarget).siblings('input').val() as CompendiumUUID
         const entry = await fromUuid<JournalEntry>(uuid)
         entry?.sheet.render(true)
     }

@@ -1,9 +1,9 @@
-import { getFlag, setFlag } from './@utils/foundry/flags'
-import { localize } from './@utils/foundry/i18n'
-import { error, warn } from './@utils/foundry/notifications'
-import { flagsUpdatePath } from './@utils/foundry/path'
-import { getSetting } from './@utils/foundry/settings'
-import { documentUuidFromTableResult } from './@utils/foundry/uuid'
+import { getFlag, setFlag } from '@utils/foundry/flags'
+import { localize } from '@utils/foundry/localize'
+import { error, warn } from '@utils/foundry/notification'
+import { flagsUpdatePath } from '@utils/foundry/path'
+import { getSetting } from '@utils/foundry/settings'
+import { documentUuidFromTableResult } from '@utils/foundry/uuid'
 
 const DECK_PACK = 'pf2e.hero-point-deck' as const
 const TABLE_PACK = 'pf2e.rollable-tables' as const
@@ -18,7 +18,7 @@ async function getTableFromUuid(uuid: string | undefined) {
 }
 
 export async function getDefaultCompendiumTable() {
-    return /** @type {Promise<RollTable>} */ getTableFromUuid(TABLE_UUID)
+    return getTableFromUuid(TABLE_UUID) as Promise<RollTable>
 }
 
 export async function getDefaultWorldTable() {
@@ -82,7 +82,7 @@ export async function getHeroActionDetails(uuid: string) {
 
     const page = document.pages.contents[0]
 
-    let text = page.text.content
+    let text = page?.text.content
     if (text && document.pack === DECK_PACK) text = text.replace(/^<p>/, '<p><strong>Trigger</strong> ')
 
     return text ? { name: document.name, description: text } : undefined
@@ -136,13 +136,13 @@ export async function drawHeroAction() {
     }
 
     if (table.replacement) {
-        const drawn = table.results.filter(r => !(r as TableResult).drawn)
+        const drawn = table.results.filter(r => !r.drawn)
         if (!drawn.length) await table.resetResults()
     }
 
     const draw = (await table.draw({ displayChat: false })).results[0]
-    const uuid = documentUuidFromTableResult(draw)
+    if (!draw) return
 
+    const uuid = documentUuidFromTableResult(draw)
     if (uuid) return { uuid, name: draw.text }
-    return undefined
 }

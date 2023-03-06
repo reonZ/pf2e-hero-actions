@@ -1,12 +1,13 @@
 \.git 
 \node_modules
-\.parcel-cache
 \releases 
 \src
+*.scss
 .gitignore 
 *.lock 
 ignore.txt
 package*.json
+*.code-workspace
 release.mjs
-setup.mjs
 tsconfig.json
+webpack*.*

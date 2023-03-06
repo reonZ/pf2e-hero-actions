@@ -1,5 +1,5 @@
 <div class="header">
-    {{pf2eHeroActions 'trade.select'}}
+    {{i18n 'select'}}
     <select name="target">
         <option value="" selected disabled hidden></option>
         {{selectOptions targets selected=target.id nameAttr="id" labelAttr="name"}}
@@ -25,6 +25,6 @@
     </div>
 </div>
 <div class="buttons">
-    <button data-action="trade" {{disabled (not target)}}>{{pf2eHeroActions 'trade.send'}}</button>
-    <button data-action="cancel">{{pf2eHeroActions 'trade.cancel'}}</button>
+    <button data-action="trade" {{disabled (not target)}}>{{i18n 'send'}}</button>
+    <button data-action="cancel">{{i18n 'cancel'}}</button>
 </div>
