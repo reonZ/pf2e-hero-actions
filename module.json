@@ -9,20 +9,26 @@
             "discord": "Idle#3251"
         }
     ],
-    "esmodules": ["scripts/main.js"],
+    "esmodules": [
+        "scripts/main.js"
+    ],
     "compatibility": {
         "minimum": "10.291",
         "verified": "10"
     },
-    "version": "2.2.2",
+    "version": "2.3.0",
     "manifestPlusVersion": "1.2.0",
     "url": "https://github.com/reonZ/pf2e-hero-actions",
     "readme": "https://github.com/reonZ/pf2e-hero-actions/blob/master/README.md",
     "manifest": "https://raw.githubusercontent.com/reonZ/pf2e-hero-actions/master/module.json",
-    "download": "https://github.com/reonZ/pf2e-hero-actions/releases/download/2.2.2/module.zip",
+    "download": "https://github.com/reonZ/pf2e-hero-actions/releases/download/2.3.0/module.zip",
     "changelog": "https://github.com/reonZ/pf2e-hero-actions/blob/master/CHANGELOG.md",
     "bugs": "https://github.com/reonZ/pf2e-hero-actions/issues",
-    "styles": ["styles/trade.css", "styles/sheet.css", "styles/dialogs.css"],
+    "styles": [
+        "styles/trade.css",
+        "styles/sheet.css",
+        "styles/dialogs.css"
+    ],
     "languages": [
         {
             "lang": "en",
