@@ -91,3 +91,7 @@ function getHeroActions: (actor: CharacterPF2e) => Array<{ uuid: string; name: s
  */
 function useHeroAction: (actor: CharacterPF2e, uuid: string) => Promise<void>
 ```
+
+# CHANGELOG
+
+You can see the changelog [HERE](./CHANGELOG.md)

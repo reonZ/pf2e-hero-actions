@@ -1,8 +1,8 @@
-import { getFlag, setFlag } from './@utils/foundry/flags'
-import { localize } from './@utils/foundry/i18n'
-import { warn, error } from './@utils/foundry/notifications'
-import { chatUUID } from './@utils/foundry/uuid'
-import { socketEmit } from './@utils/socket'
+import { getFlag, setFlag } from '@utils/foundry/flags'
+import { localize } from '@utils/foundry/localize'
+import { error, warn } from '@utils/foundry/notification'
+import { chatUUID } from '@utils/foundry/uuid'
+import { socketEmit } from '@utils/socket'
 
 export async function onTradeRequest(trade: BaseTrade) {
     const { sender, receiver } = trade
@@ -49,8 +49,8 @@ export async function onTradeAccepted(trade: BaseTrade) {
         return
     }
 
-    const senderAction = senderActions.splice(senderActionIndex, 1)[0]
-    const receiverAction = receiverActions.splice(receiverActionIndex, 1)[0]
+    const senderAction = senderActions.splice(senderActionIndex, 1)[0]!
+    const receiverAction = receiverActions.splice(receiverActionIndex, 1)[0]!
 
     senderActions.push(receiverAction)
     receiverActions.push(senderAction)

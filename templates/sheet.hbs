@@ -1,16 +1,16 @@
 <h3 class="header">
-    {{pf2eHeroActions 'heroActions.label'}}
+    {{i18n 'label'}}
     {{#if canTrade}}
     <button type="button" data-action="hero-actions-trade">
-        <i class="fas fa-right-left"></i> {{pf2eHeroActions 'heroActions.trade'}}
+        <i class="fas fa-right-left"></i> {{i18n 'trade'}}
     </button>
     {{else}}
-    <button type="button" title="{{pf2eHeroActions 'heroActions.tbd'}}">
+    <button type="button" title="{{i18n 'tbd'}}">
         <i class="fas fa-question"></i>
     </button>
     {{/if}}
 </h3>
-<ol class="actions-list item-list directory-list heroActions-list"{{#unless canUse}} data-discard="{{diff}}"{{/unless}}>
+<ol class="actions-list item-list directory-list heroActions-list" {{#unless canUse}} data-discard="{{diff}}" {{/unless}}>
     {{#each list as |action|}}
     <li class="item action" data-uuid="{{action.uuid}}">
         <div class="item-name">
@@ -22,9 +22,9 @@
         {{#if @root.owner}}
         <div class="item-controls">
             {{#if @root.canUse}}
-            <button type="button" data-action="use">{{pf2eHeroActions 'heroActions.action.use'}}</button>
+            <button type="button" data-action="use">{{@root.i18n 'action.use'}}</button>
             {{else}}
-            <button type="button" data-action="discard">{{pf2eHeroActions 'heroActions.action.discard'}}</button>
+            <button type="button" data-action="discard">{{@root.i18n 'action.discard'}}</button>
             {{/if}}
         </div>
         {{/if}}
@@ -34,11 +34,11 @@
     </li>
     {{/each}}
     {{#if canDraw}}
-    <button type="button" data-action="draw">{{pf2eHeroActions 'heroActions.draw' nb=diff}}</button>
+    <button type="button" data-action="draw">{{i18n 'draw' nb=diff}}</button>
     {{else if mustDiscard}}
-    <div class="error">{{pf2eHeroActions 'heroActions.error' nb=diff}}</div>
+    <div class="error">{{i18n 'error' nb=diff}}</div>
     <button type="button" data-action="discard-selected">
-        {{pf2eHeroActions 'heroActions.discard' nb=diff}}
+        {{i18n 'discard' nb=diff}}
     </button>
     {{/if}}
 </ol>
