@@ -1,4 +1,4 @@
-.actions-container .actions-tabs-wrapper .actions-panels ol.actions-list.heroActions-list .action .item-controls > button {
+.sheet.actor.character .sheet-body .sheet-content [data-tab=actions] .tab-content .actions-panels [data-tab=encounter] ol.actions-list.heroActions-list .action .item-controls > button {
   text-rendering: optimizeLegibility;
   border: none;
   border-radius: 2px;
@@ -16,27 +16,27 @@
   white-space: nowrap;
   background: var(--bg-dark);
 }
-.actions-container .actions-tabs-wrapper .actions-panels ol.actions-list.heroActions-list .action .item-controls > button:hover {
+.sheet.actor.character .sheet-body .sheet-content [data-tab=actions] .tab-content .actions-panels [data-tab=encounter] ol.actions-list.heroActions-list .action .item-controls > button:hover {
   text-shadow: 0 0 1px var(--text-dark);
 }
-.actions-container .actions-tabs-wrapper .actions-panels ol.actions-list.heroActions-list .action:not(.expanded) .item-summary {
+.sheet.actor.character .sheet-body .sheet-content [data-tab=actions] .tab-content .actions-panels [data-tab=encounter] ol.actions-list.heroActions-list .action:not(.expanded) .item-summary {
   display: none;
 }
-.actions-container .actions-tabs-wrapper .actions-panels ol.actions-list.heroActions-list .action.discarded {
+.sheet.actor.character .sheet-body .sheet-content [data-tab=actions] .tab-content .actions-panels [data-tab=encounter] ol.actions-list.heroActions-list .action.discarded {
   background-color: rgba(0, 0, 0, 0.1294117647);
 }
-.actions-container .actions-tabs-wrapper .actions-panels ol.actions-list.heroActions-list .action.discarded .item-name h4 {
+.sheet.actor.character .sheet-body .sheet-content [data-tab=actions] .tab-content .actions-panels [data-tab=encounter] ol.actions-list.heroActions-list .action.discarded .item-name h4 {
   text-decoration: line-through;
 }
-.actions-container .actions-tabs-wrapper .actions-panels ol.actions-list.heroActions-list .error {
+.sheet.actor.character .sheet-body .sheet-content [data-tab=actions] .tab-content .actions-panels [data-tab=encounter] ol.actions-list.heroActions-list .error {
   margin: auto;
   color: #990404;
   font-weight: 900;
   padding-block: 8px;
 }
-.actions-container .actions-tabs-wrapper .actions-panels ol.actions-list.heroActions-list:not(.discardable) [data-action=discard-selected] {
+.sheet.actor.character .sheet-body .sheet-content [data-tab=actions] .tab-content .actions-panels [data-tab=encounter] ol.actions-list.heroActions-list:not(.discardable) [data-action=discard-selected] {
   display: none;
 }
-.actions-container .actions-tabs-wrapper .actions-panels ol.actions-list.heroActions-list.discardable .error {
+.sheet.actor.character .sheet-body .sheet-content [data-tab=actions] .tab-content .actions-panels [data-tab=encounter] ol.actions-list.heroActions-list.discardable .error {
   display: none;
 }

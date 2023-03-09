@@ -30,7 +30,9 @@ async function addHeroActions(html: JQuery, actor: CharacterPF2e) {
         i18n: subLocalize('templates.heroActions'),
     })
 
-    html.find('.tab[data-tab="actions"] .actions-panel[data-tab="encounter"] > .strikes-list:not(.skill-action-list)')
+    html.find(
+        '.sheet-body .sheet-content [data-tab=actions] .tab-content .actions-panels [data-tab=encounter] > .strikes-list:not(.skill-action-list)'
+    )
         .first()
         .after(template)
 }
@@ -91,7 +93,7 @@ async function onClickHeroActionDisplay(actor: CharacterPF2e, event: JQuery.Clic
 
     ChatMessage.create({
         content: `<h2>${details.name}</h2>${details.description}`,
-        speaker: ChatMessage.getSpeaker({ actor }),
+        speaker: ChatMessage.getSpeaker({ actor: actor as Actor }),
     })
 }
 
@@ -128,7 +130,7 @@ async function onClickHeroActionsDiscard(actor: CharacterPF2e, html: JQuery) {
     ChatMessage.create({
         flavor: `<h4 class="action">${localize('actions-discard.header', { nb: display.length })}</h4>`,
         content: display.map(x => `<div>${x}</div>`).join(''),
-        speaker: ChatMessage.getSpeaker({ actor }),
+        speaker: ChatMessage.getSpeaker({ actor: actor as Actor }),
     })
 }
 
@@ -157,7 +159,7 @@ async function onClickHeroActionsDraw(actor: CharacterPF2e, event: JQuery.ClickE
     ChatMessage.create({
         flavor: `<h4 class="action">${localize('actions-draw.header', { nb: display.length })}</h4>`,
         content: display.map(x => `<div>${x}</div>`).join(''),
-        speaker: ChatMessage.getSpeaker({ actor }),
+        speaker: ChatMessage.getSpeaker({ actor: actor as Actor }),
     })
 }
 

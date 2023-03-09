@@ -1,63 +1,65 @@
-.actions-container .actions-tabs-wrapper .actions-panels ol.actions-list.heroActions-list {
-    .action {
-        .item-controls {
-            > button {
-                text-rendering: optimizeLegibility;
-                border: none;
-                border-radius: 2px;
-                box-shadow: inset 0 0 0 2px #bfbebe;
-                color: var(--text-dark);
-                flex: 0;
-                font-family: var(--sans-serif);
-                font-size: var(--font-size-10);
-                font-weight: 500;
-                letter-spacing: 0.05em;
-                line-height: 14px;
-                margin: 0;
-                padding: 3px 8px;
-                text-transform: uppercase;
-                white-space: nowrap;
-                background: var(--bg-dark);
+.sheet.actor.character .sheet-body .sheet-content {
+    [data-tab='actions'] .tab-content .actions-panels [data-tab='encounter'] ol.actions-list.heroActions-list {
+        .action {
+            .item-controls {
+                > button {
+                    text-rendering: optimizeLegibility;
+                    border: none;
+                    border-radius: 2px;
+                    box-shadow: inset 0 0 0 2px #bfbebe;
+                    color: var(--text-dark);
+                    flex: 0;
+                    font-family: var(--sans-serif);
+                    font-size: var(--font-size-10);
+                    font-weight: 500;
+                    letter-spacing: 0.05em;
+                    line-height: 14px;
+                    margin: 0;
+                    padding: 3px 8px;
+                    text-transform: uppercase;
+                    white-space: nowrap;
+                    background: var(--bg-dark);
 
-                &:hover {
-                    text-shadow: 0 0 1px var(--text-dark);
+                    &:hover {
+                        text-shadow: 0 0 1px var(--text-dark);
+                    }
+                }
+            }
+
+            &:not(.expanded) {
+                .item-summary {
+                    display: none;
+                }
+            }
+
+            &.discarded {
+                background-color: #00000021;
+
+                .item-name {
+                    h4 {
+                        text-decoration: line-through;
+                    }
                 }
             }
         }
 
-        &:not(.expanded) {
-            .item-summary {
+        .error {
+            margin: auto;
+            color: #990404;
+            font-weight: 900;
+            padding-block: 8px;
+        }
+
+        &:not(.discardable) {
+            [data-action='discard-selected'] {
                 display: none;
             }
         }
 
-        &.discarded {
-            background-color: #00000021;
-
-            .item-name {
-                h4 {
-                    text-decoration: line-through;
-                }
+        &.discardable {
+            .error {
+                display: none;
             }
-        }
-    }
-
-    .error {
-        margin: auto;
-        color: #990404;
-        font-weight: 900;
-        padding-block: 8px;
-    }
-
-    &:not(.discardable) {
-        [data-action='discard-selected'] {
-            display: none;
-        }
-    }
-
-    &.discardable {
-        .error {
-            display: none;
         }
     }
 }
