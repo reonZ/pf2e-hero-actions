@@ -1,3 +1,11 @@
+# 2.3.2
+
+-   fix {nb} display in template
+
+# 2.3.1
+
+-   narrowed the character sheet style
+
 # 2.3.0
 
 -   make sure only one GM runs the trade request
