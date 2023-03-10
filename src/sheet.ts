@@ -18,6 +18,7 @@ async function addHeroActions(html: JQuery, actor: CharacterPF2e) {
     const actions = getHeroActions(actor)
     const diff = actor.heroPoints.value - actions.length
     const isOwner = actor.isOwner
+    const localize = subLocalize('templates.heroActions')
 
     const template = await renderTemplate(templatePath('sheet.hbs'), {
         owner: isOwner,
@@ -27,7 +28,7 @@ async function addHeroActions(html: JQuery, actor: CharacterPF2e) {
         canTrade: getSetting('trade'),
         mustDiscard: diff < 0,
         diff: Math.abs(diff),
-        i18n: subLocalize('templates.heroActions'),
+        i18n: (key: string, { hash }: { hash: Record<string, string> }) => localize(key, hash),
     })
 
     html.find(
