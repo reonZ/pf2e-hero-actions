@@ -135,9 +135,9 @@ export async function drawHeroAction() {
         }
     }
 
-    if (table.replacement) {
-        const drawn = table.results.filter(r => !r.drawn)
-        if (!drawn.length) await table.resetResults()
+    if (table.replacement === false) {
+        const notDrawn = table.results.some(r => !r.drawn)
+        if (!notDrawn) await table.resetResults()
     }
 
     const draw = (await table.draw({ displayChat: false })).results[0]
