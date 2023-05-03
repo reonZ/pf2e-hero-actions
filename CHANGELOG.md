@@ -1,3 +1,7 @@
+# 2.3.3
+
+-   fixed table reset issue
+
 # 2.3.2
 
 -   fix {nb} display in template
