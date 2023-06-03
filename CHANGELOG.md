@@ -1,3 +1,12 @@
+# 2.4.0
+
+-   added the `getHeroActionDetails` function to the module api
+-   added the `drawHeroAction` function to the module api
+-   added the `drawHeroActions` function to the module api
+-   added the `sendActionToChat` function to the module api
+-   added the `discardHeroActions` function to the module api
+-   added the `tradeHeroAction` function to the module api
+
 # 2.3.4
 
 -   fixed api functions not being pipelined into the player clients

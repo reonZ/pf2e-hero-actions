@@ -83,6 +83,14 @@ function getHeroActions: (actor: CharacterPF2e) => Array<{ uuid: string; name: s
 
 ```js
 /**
+ * @param {string} uuid
+ * @returns {Promise<{name: string, description: string} | undefined>} the description of the item if found
+ */
+function getHeroActionDetails(uuid: string) => Promise<{name: string, description: string} | undefined>
+```
+
+```js
+/**
  * Will consume a hero point and remove the action from the actor
  * Displaying a ChatMessage with the details
  *
@@ -90,6 +98,47 @@ function getHeroActions: (actor: CharacterPF2e) => Array<{ uuid: string; name: s
  * @param {string} uuid of the action
  */
 function useHeroAction: (actor: CharacterPF2e, uuid: string) => Promise<void>
+```
+
+```js
+/**
+ * returns null if an handled error occured (displaying a notification)
+ * @returns {Promise<{ uuid: string; name: any } | null | undefined>}
+ */
+function drawHeroAction: () => Promise<{ uuid: string; name: any } | null | undefined>
+```
+
+```js
+/**
+ * Will draw the missing action for the character
+ * Displaying a ChatMessage with the details
+ * @param {CharacterPF2e} actor
+ */
+function drawHeroActions: (actor: CharacterPF2e) => Promise<void>
+```
+
+```js
+/**
+ * @param {CharacterPF2e} actor
+ * @param {ItemUUID} uuid
+ */
+function sendActionToChat: (actor: CharacterPF2e, uuid: ItemUUID) => Promise<void>
+```
+
+```js
+/**
+ * @param {CharacterPF2e} actor
+ * @param {ItemUUID | ItemUUID[]} uuids
+ */
+function discardHeroActions: (actor: CharacterPF2e, uuids: ItemUUID | ItemUUID[])=> Promise<void>
+```
+
+```js
+/**
+ * Will open a trade dialog
+ * @param {CharacterPF2e} actor
+ */
+function tradeHeroAction: (actor: CharacterPF2e) => void
 ```
 
 # CHANGELOG
