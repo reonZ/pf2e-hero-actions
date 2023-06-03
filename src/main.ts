@@ -33,13 +33,14 @@ Hooks.once('init', () => {
 Hooks.once('ready', () => {
     socketOn(onPacketReceived)
 
-    if (!game.user.isGM) return
-
     getCurrentModule<HeroActionsApi>().api = {
-        createTable,
-        removeHeroActions,
         getHeroActions,
         useHeroAction,
+    }
+
+    if (game.user.isGM) {
+        getCurrentModule<HeroActionsApi>().api.createTable = createTable
+        getCurrentModule<HeroActionsApi>().api.removeHeroActions = removeHeroActions
     }
 })
 
