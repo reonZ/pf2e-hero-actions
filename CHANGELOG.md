@@ -1,3 +1,7 @@
+# 2.3.4
+
+-   fixed api functions not being pipelined into the player clients
+
 # 2.3.3
 
 -   fixed table reset issue
