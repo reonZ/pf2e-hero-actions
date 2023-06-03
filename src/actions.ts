@@ -1,9 +1,10 @@
+import { Trade } from '@apps/trade'
 import { getFlag, setFlag } from '@utils/foundry/flags'
 import { localize } from '@utils/foundry/localize'
 import { error, warn } from '@utils/foundry/notification'
 import { flagsUpdatePath } from '@utils/foundry/path'
 import { getSetting } from '@utils/foundry/settings'
-import { documentUuidFromTableResult } from '@utils/foundry/uuid'
+import { chatUUID, documentUuidFromTableResult } from '@utils/foundry/uuid'
 
 const DECK_PACK = 'pf2e.hero-point-deck' as const
 const TABLE_PACK = 'pf2e.rollable-tables' as const
@@ -145,4 +146,80 @@ export async function drawHeroAction() {
 
     const uuid = documentUuidFromTableResult(draw)
     if (uuid) return { uuid, name: draw.text }
+}
+
+export async function drawHeroActions(actor: CharacterPF2e) {
+    const actions = getHeroActions(actor)
+    const nb = actor.heroPoints.value - actions.length
+
+    const drawn = /** @type {HeroAction[]} */ []
+    for (let i = 0; i < nb; i++) {
+        const action = await drawHeroAction()
+
+        if (action === undefined) continue
+        else if (action === null) return
+
+        actions.push(action)
+        drawn.push(action)
+    }
+
+    if (!drawn.length) return
+
+    setHeroActions(actor, actions)
+
+    const display = drawn.map(x => chatUUID(x.uuid, x.name))
+    ChatMessage.create({
+        flavor: `<h4 class="action">${localize('actions-draw.header', { nb: display.length })}</h4>`,
+        content: display.map(x => `<div>${x}</div>`).join(''),
+        speaker: ChatMessage.getSpeaker({ actor: actor as Actor }),
+    })
+}
+
+export async function sendActionToChat(actor: CharacterPF2e, uuid: ItemUUID) {
+    const details = await getHeroActionDetails(uuid)
+    if (!details) return error('details.missing')
+
+    ChatMessage.create({
+        content: `<h2>${details.name}</h2>${details.description}`,
+        speaker: ChatMessage.getSpeaker({ actor: actor as Actor }),
+    })
+}
+
+export async function discardHeroActions(actor: CharacterPF2e, uuids: ItemUUID | ItemUUID[]) {
+    uuids = typeof uuids === 'string' ? [uuids] : uuids
+
+    const actions = getHeroActions(actor)
+    const removed: HeroAction[] = []
+
+    for (const uuid of uuids) {
+        const index = actions.findIndex(x => x.uuid === uuid)
+        if (index === -1) continue
+        removed.push(actions[index]!)
+        actions.splice(index, 1)
+    }
+
+    setHeroActions(actor, actions)
+
+    const display = removed.map(x => chatUUID(x.uuid, x.name))
+    ChatMessage.create({
+        flavor: `<h4 class="action">${localize('actions-discard.header', { nb: display.length })}</h4>`,
+        content: display.map(x => `<div>${x}</div>`).join(''),
+        speaker: ChatMessage.getSpeaker({ actor: actor as Actor }),
+    })
+}
+
+export function tradeHeroAction(actor: CharacterPF2e) {
+    const actions = getFlag<Array<any>>(actor, 'heroActions')
+    if (!actions || !actions.length) {
+        warn('no-action')
+        return
+    }
+
+    const diff = actions.length - actor.heroPoints.value
+    if (diff > 0) {
+        warn('no-points', { nb: diff.toString() })
+        return
+    }
+
+    new Trade(actor).render(true)
 }

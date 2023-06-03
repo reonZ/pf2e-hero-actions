@@ -1,10 +1,19 @@
+import { getCurrentModule } from '@utils/foundry/module'
+import { registerSetting } from '@utils/foundry/settings'
+import { isFirstGM } from '@utils/foundry/user'
 import { setModuleID } from '@utils/module'
 import { socketOn } from '@utils/socket'
-import { registerSetting } from '@utils/foundry/settings'
-import { getCurrentModule } from '@utils/foundry/module'
-import { isFirstGM } from '@utils/foundry/user'
+import {
+    discardHeroActions,
+    drawHeroAction,
+    drawHeroActions,
+    getHeroActionDetails,
+    getHeroActions,
+    sendActionToChat,
+    tradeHeroAction,
+    useHeroAction,
+} from './actions'
 import { createTable, removeHeroActions } from './api'
-import { getHeroActions, useHeroAction } from './actions'
 import { refreshSheets, renderCharacterSheetPF2e } from './sheet'
 import { onTradeAccepted, onTradeError, onTradeRejected, onTradeRequest } from './trade'
 
@@ -36,6 +45,12 @@ Hooks.once('ready', () => {
     getCurrentModule<HeroActionsApi>().api = {
         getHeroActions,
         useHeroAction,
+        getHeroActionDetails,
+        drawHeroAction,
+        drawHeroActions,
+        sendActionToChat,
+        discardHeroActions,
+        tradeHeroAction,
     }
 
     if (game.user.isGM) {
