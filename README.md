@@ -1,5 +1,7 @@
 # FoundryVTT PF2e Hero Actions
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K6M2V13)
+
 https://www.youtube.com/watch?v=8EezVnYQKyo
 
 This module integrates and automates the `Hero Deck` actions into the PF2e system.
