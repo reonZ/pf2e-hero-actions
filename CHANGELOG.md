@@ -1,3 +1,7 @@
+# 2.5.0
+
+-   compatible with v11 (though, the system entries have broken links)
+
 # 2.4.0
 
 -   added the `getHeroActionDetails` function to the module api
