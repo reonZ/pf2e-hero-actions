@@ -1,3 +1,10 @@
+# 2.6.0
+
+-   this update is for the pf2e system version `5.0.1` where breaking changes have been made to the `Hero Point Deck` entries and table
+-   a message will appear in the chat explaining the different steps to take to work with the latest system version
+-   if you were using the default `Hero Point Deck` entries, you will have to clean all the hero actions present in you characters (there is a convenient macro for that though)
+-   automatic data migration wasn't possible due to being unable to associate old compendium entries with the new ones
+
 # 2.5.0
 
 -   compatible with v11 (though, the system entries have broken links)
