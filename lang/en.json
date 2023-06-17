@@ -1,5 +1,8 @@
 {
     "pf2e-hero-actions": {
+        "migration": {
+            "system-change": "<h3>PF2e Hero Actions</h3><p>The pf2e system has made breaking changes to the <strong>Hero Point Deck</strong> entries and table in version <strong>5.0.1</strong>.</p><p>If it you don't have any world table or have a table filled with custom entries entirely then you can skip this entirely.</p><p>If you are using the default table without any custom entries, you will have to delete it and replace it with the new one (you can always use the @UUID[Compendium.pf2e-hero-actions.macros.Macro.SUXi4nhdJb8vZk58]{Create Hero Actions Table} for that).</p><p>If on the other hand, your table contains a mix of both, you will need to manually update all the table entries pointing to the old default journal entries, turn them into <strong>Text</strong> type instead of <strong>Compendium</strong> and use the <strong>@UUID</strong> syntax containing the uuid pointing directly to the page of the new @UUID[Compendium.pf2e.journals.JournalEntry.BSp4LUSaOmUyjBko] journal.</p><p>If you ended up making any change mentioned above, you will need to clean all the character's hero actions, the best way to do that is to use @UUID[Compendium.pf2e-hero-actions.macros.Macro.9N64covsl3iGzxSh]{Remove Hero Actions}.</p>"
+        },
         "trade-request": {
             "title": "Trade Request",
             "header": "The character {sender} wants to trade with {receiver}",

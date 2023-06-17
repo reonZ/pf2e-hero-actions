@@ -6,10 +6,8 @@ import { flagsUpdatePath } from '@utils/foundry/path'
 import { getSetting } from '@utils/foundry/settings'
 import { chatUUID, documentUuidFromTableResult } from '@utils/foundry/uuid'
 
-const DECK_PACK = 'pf2e.hero-point-deck' as const
-const TABLE_PACK = 'pf2e.rollable-tables' as const
-const TABLE_ID = 'zgZoI7h0XjjJrrNK' as const
-const TABLE_UUID = `Compendium.${TABLE_PACK}.${TABLE_ID}` as const
+const JOURNAL_UUID = 'Compendium.pf2e.journals.JournalEntry.BSp4LUSaOmUyjBko' as const
+const TABLE_UUID = 'Compendium.pf2e.rollable-tables.RollTable.zgZoI7h0XjjJrrNK' as const
 const ICON = 'systems/pf2e/icons/features/feats/heroic-recovery.webp' as const
 
 async function getTableFromUuid(uuid: string | undefined) {
@@ -22,7 +20,7 @@ export async function getDefaultCompendiumTable() {
     return getTableFromUuid(TABLE_UUID) as Promise<RollTable>
 }
 
-export async function getDefaultWorldTable() {
+export function getDefaultWorldTable() {
     return game.tables.find(x => x.getFlag('core', 'sourceId') === TABLE_UUID)
 }
 
@@ -31,22 +29,11 @@ export async function getCustomTable() {
 }
 
 export async function getDeckTable() {
-    return (await getCustomTable()) ?? (await getDefaultWorldTable()) ?? (await getDefaultCompendiumTable())
+    return (await getCustomTable()) ?? getDefaultWorldTable() ?? (await getDefaultCompendiumTable())
 }
 
 export function getHeroActions(actor: CharacterPF2e): HeroAction[] {
-    const actions = getFlag<Array<HeroAction | string>>(actor, 'heroActions') ?? []
-    const pack = game.packs.get(DECK_PACK)
-
-    return actions
-        .map(action => {
-            if (typeof action !== 'string') return action
-            if (!pack) return undefined
-            const entry = pack.index.get(action)
-            if (!entry) return undefined
-            return { name: entry.name, uuid: `Compendium.${DECK_PACK}.${entry._id}` }
-        })
-        .filter(x => x) as HeroAction[]
+    return getFlag<Array<HeroAction>>(actor, 'heroActions') ?? []
 }
 
 export async function useHeroAction(actor: CharacterPF2e, uuid: string) {
@@ -78,15 +65,17 @@ export async function useHeroAction(actor: CharacterPF2e, uuid: string) {
 }
 
 export async function getHeroActionDetails(uuid: string) {
-    const document = await fromUuid(uuid)
-    if (!(document instanceof JournalEntry)) return undefined
+    let document = await fromUuid<JournalEntry | JournalEntryPage>(uuid)
+    if (!document) return undefined
 
-    const page = document.pages.contents[0]
+    const parent = document instanceof JournalEntry ? document : document.parent
+    const page = document instanceof JournalEntry ? document.pages.contents[0] : document
 
     let text = page?.text.content
-    if (text && document.pack === DECK_PACK) text = text.replace(/^<p>/, '<p><strong>Trigger</strong> ')
+    if (!text) return undefined
 
-    return text ? { name: document.name, description: text } : undefined
+    if (parent.uuid === JOURNAL_UUID) text = text.replace(/^<p>/, '<p><strong>Trigger</strong> ')
+    return { name: page.name, description: text }
 }
 
 export function setHeroActions(actor: CharacterPF2e, actions: HeroAction[]) {
@@ -99,6 +88,11 @@ export function getTableSource(unique = true, table?: RollTable) {
         replacement: !unique,
         img: ICON,
         description: localize('table.description'),
+        flags: {
+            core: {
+                sourceId: TABLE_UUID,
+            },
+        },
     }
     if (!table) return source
     return mergeObject(duplicate(table._source), source)
@@ -145,7 +139,14 @@ export async function drawHeroAction() {
     if (!draw) return
 
     const uuid = documentUuidFromTableResult(draw)
-    if (uuid) return { uuid, name: draw.text }
+    if (uuid) return { uuid, name: await getLabelfromTableResult(draw, uuid) }
+}
+
+const RESULT_TEXT_REGEX = /@UUID\[[\w\.]+\]{([\w -]+)}/
+async function getLabelfromTableResult(result: TableResult, uuid?: string) {
+    if (result.type !== CONST.TABLE_RESULT_TYPES.TEXT) return result.text
+    const label = RESULT_TEXT_REGEX.exec(result.text)?.[1]
+    return label ?? (uuid && (await fromUuid(uuid as EmbeddedItemUUID))?.name)
 }
 
 export async function drawHeroActions(actor: CharacterPF2e) {

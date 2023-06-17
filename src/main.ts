@@ -1,5 +1,6 @@
+import { localize } from '@utils/foundry/localize'
 import { getCurrentModule } from '@utils/foundry/module'
-import { registerSetting } from '@utils/foundry/settings'
+import { getSetting, registerSetting, setSetting } from '@utils/foundry/settings'
 import { isFirstGM } from '@utils/foundry/user'
 import { setModuleID } from '@utils/module'
 import { socketOn } from '@utils/socket'
@@ -37,9 +38,15 @@ Hooks.once('init', () => {
         config: true,
         onChange: refreshSheets,
     })
+
+    registerSetting({
+        name: 'migrated',
+        type: Number,
+        default: 0,
+    })
 })
 
-Hooks.once('ready', () => {
+Hooks.once('ready', async () => {
     socketOn(onPacketReceived)
 
     getCurrentModule<HeroActionsApi>().api = {
@@ -56,8 +63,21 @@ Hooks.once('ready', () => {
     if (game.user.isGM) {
         getCurrentModule<HeroActionsApi>().api.createTable = createTable
         getCurrentModule<HeroActionsApi>().api.removeHeroActions = removeHeroActions
+
+        await manageMigrations()
     }
 })
+
+async function manageMigrations() {
+    const migrated = getSetting<number>('migrated')
+
+    // pf2e system 5.0.1
+    if (migrated < 1) {
+        ChatMessage.create({ content: localize('migration.system-change'), whisper: game.user.id })
+    }
+
+    setSetting('migrated', 1)
+}
 
 function onPacketReceived(packet: Packet) {
     switch (packet.type) {

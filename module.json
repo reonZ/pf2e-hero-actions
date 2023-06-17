@@ -9,11 +9,9 @@
             "discord": "Idle#3251"
         }
     ],
-    "esmodules": [
-        "scripts/main.js"
-    ],
+    "esmodules": ["scripts/main.js"],
     "compatibility": {
-        "minimum": "10.291",
+        "minimum": "11.302",
         "verified": "11"
     },
     "version": "2.5.0",
@@ -24,11 +22,7 @@
     "download": "https://github.com/reonZ/pf2e-hero-actions/releases/download/2.5.0/module.zip",
     "changelog": "https://github.com/reonZ/pf2e-hero-actions/blob/master/CHANGELOG.md",
     "bugs": "https://github.com/reonZ/pf2e-hero-actions/issues",
-    "styles": [
-        "styles/trade.css",
-        "styles/sheet.css",
-        "styles/dialogs.css"
-    ],
+    "styles": ["styles/trade.css", "styles/sheet.css", "styles/dialogs.css"],
     "languages": [
         {
             "lang": "en",
@@ -49,7 +43,7 @@
                 "type": "system",
                 "manifest": "https://raw.githubusercontent.com/foundryvtt/pf2e/master/system.json",
                 "compatibility": {
-                    "minimum": "4.8.3"
+                    "minimum": "5.0.1"
                 }
             }
         ]
