@@ -169,11 +169,19 @@ export async function drawHeroActions(actor: CharacterPF2e) {
     setHeroActions(actor, actions)
 
     const display = drawn.map(x => chatUUID(x.uuid, x.name))
-    ChatMessage.create({
+
+    const data = {
         flavor: `<h4 class="action">${localize('actions-draw.header', { nb: display.length })}</h4>`,
         content: display.map(x => `<div>${x}</div>`).join(''),
         speaker: ChatMessage.getSpeaker({ actor: actor as Actor }),
-    })
+    }
+
+    if (getSetting('private')) {
+        data.type = CONST.CHAT_MESSAGE_TYPES.ROLL
+        data.rollMode = CONST.DICE_ROLL_MODES.PRIVATE
+    }
+
+    ChatMessage.create(data)
 }
 
 export async function sendActionToChat(actor: CharacterPF2e, uuid: ItemUUID) {

@@ -98,6 +98,10 @@
             "trade": {
                 "name": "Allow Trade",
                 "hint": "When enabled, players will be able to trade action with each others."
+            },
+            "private": {
+                "name": "Private Draw",
+                "hint": "When enabled, the message from drawing hero actions will be private instead of public."
             }
         },
         "use": {

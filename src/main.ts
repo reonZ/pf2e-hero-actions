@@ -40,6 +40,13 @@ Hooks.once('init', () => {
     })
 
     registerSetting({
+        name: 'private',
+        type: Boolean,
+        default: false,
+        config: true,
+    })
+
+    registerSetting({
         name: 'migrated',
         type: Number,
         default: 0,
