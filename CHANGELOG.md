@@ -1,3 +1,7 @@
+# 2.7.0
+
+-   added `Private Draw` setting, when enabled, messages when drawing hero actions will be private
+
 # 2.6.0
 
 -   this update is for the pf2e system version `5.0.1` where breaking changes have been made to the `Hero Point Deck` entries and table
