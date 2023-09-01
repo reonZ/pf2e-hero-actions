@@ -54,8 +54,11 @@ export async function onTradeAccepted(trade) {
     setFlag(senderActor, 'heroActions', senderActions)
     setFlag(receiverActor, 'heroActions', receiverActions)
 
-    let content = `<div>${localize('trade-success.offer', { offer: chatUUID(senderAction.uuid) })}</div>`
-    content += `<div>${localize('trade-success.receive', { receive: chatUUID(receiverAction.uuid) })}</div>`
+    const sentLink = chatUUID(senderAction.uuid)
+    const receivedLink = chatUUID(receiverAction.uuid)
+
+    let content = `<div style="line-height: 1.6">${localize('trade-success.offer', { offer: sentLink })}</div>`
+    content += `<div style="line-height: 1.6">${localize('trade-success.receive', { receive: receivedLink })}</div>`
 
     ChatMessage.create({
         flavor: `<h4 class="action">${localize('trade-success.header', { name: receiverActor.name })}</h4>`,

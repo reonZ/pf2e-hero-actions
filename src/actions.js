@@ -69,10 +69,10 @@ export async function discardHeroActions(actor, uuids) {
 
     setHeroActions(actor, actions)
 
-    const display = removed.map(x => chatUUID(x.uuid, x.name))
+    const { content, size } = chatActions(removed)
     ChatMessage.create({
-        flavor: `<h4 class="action">${localize('actions-discard.header', { nb: display.length })}</h4>`,
-        content: display.map(x => `<div>${x}</div>`).join(''),
+        flavor: `<h4 class="action">${localize('actions-discard.header', { nb: size })}</h4>`,
+        content,
         speaker: ChatMessage.getSpeaker({ actor: actor }),
     })
 }
@@ -140,11 +140,10 @@ export async function drawHeroActions(actor) {
 
     setHeroActions(actor, actions)
 
-    const display = drawn.map(x => chatUUID(x.uuid, x.name))
-
+    const { content, size } = chatActions(drawn)
     const data = {
-        flavor: `<h4 class="action">${localize('actions-draw.header', { nb: display.length })}</h4>`,
-        content: display.map(x => `<div>${x}</div>`).join(''),
+        flavor: `<h4 class="action">${localize('actions-draw.header', { nb: size })}</h4>`,
+        content,
         speaker: ChatMessage.getSpeaker({ actor: actor }),
     }
 
@@ -198,4 +197,12 @@ export function tradeHeroAction(actor) {
     }
 
     new Trade(actor).render(true)
+}
+
+function chatActions(actions) {
+    const links = actions.map(({ uuid, name }) => chatUUID(uuid, name))
+    return {
+        content: links.map(x => `<div style="line-height: 1.6;">${x}</div>`).join(''),
+        size: links.length,
+    }
 }
