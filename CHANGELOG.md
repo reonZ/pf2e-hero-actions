@@ -1,3 +1,9 @@
+# 2.8.0
+
+-   this is a system `5.4.0` release
+-   fixed character sheet style
+-   fixed chat messages style
+
 # 2.7.0
 
 -   added `Private Draw` setting, when enabled, messages when drawing hero actions will be private
