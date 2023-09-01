@@ -1,10 +1,6 @@
-import { getFlag, setFlag } from '@utils/foundry/flags'
-import { localize } from '@utils/foundry/localize'
-import { error, warn } from '@utils/foundry/notification'
-import { chatUUID } from '@utils/foundry/uuid'
-import { socketEmit } from '@utils/socket'
+import { chatUUID, error, getFlag, localize, setFlag, socketEmit, warn } from './module'
 
-export async function onTradeRequest(trade: BaseTrade) {
+export async function onTradeRequest(trade) {
     const { sender, receiver } = trade
     const senderActor = game.actors.get(sender.cid)
     const receiverActor = game.actors.get(receiver.cid)
@@ -28,7 +24,7 @@ export async function onTradeRequest(trade: BaseTrade) {
     else rejectRequest(trade)
 }
 
-export async function onTradeAccepted(trade: BaseTrade) {
+export async function onTradeAccepted(trade) {
     const { sender, receiver } = trade
     const senderActor = game.actors.get(sender.cid)
     const receiverActor = game.actors.get(receiver.cid)
@@ -38,8 +34,8 @@ export async function onTradeAccepted(trade: BaseTrade) {
         return
     }
 
-    const senderActions = getFlag<HeroAction[]>(senderActor, 'heroActions') ?? []
-    const receiverActions = getFlag<HeroAction[]>(receiverActor, 'heroActions') ?? []
+    const senderActions = getFlag(senderActor, 'heroActions') ?? []
+    const receiverActions = getFlag(receiverActor, 'heroActions') ?? []
 
     const senderActionIndex = senderActions.findIndex(x => x.uuid === sender.uuid)
     const receiverActionIndex = receiverActions.findIndex(x => x.uuid === receiver.uuid)
@@ -49,8 +45,8 @@ export async function onTradeAccepted(trade: BaseTrade) {
         return
     }
 
-    const senderAction = senderActions.splice(senderActionIndex, 1)[0]!
-    const receiverAction = receiverActions.splice(receiverActionIndex, 1)[0]!
+    const senderAction = senderActions.splice(senderActionIndex, 1)[0]
+    const receiverAction = receiverActions.splice(receiverActionIndex, 1)[0]
 
     senderActions.push(receiverAction)
     receiverActions.push(senderAction)
@@ -68,52 +64,52 @@ export async function onTradeAccepted(trade: BaseTrade) {
     })
 }
 
-export async function onTradeRejected({ receiver }: BaseTrade) {
-    const actor = game.actors.get(receiver.cid)!
-    warn('trade-rejected', { name: actor.name }, true)
-}
-
-export function onTradeError(err: string) {
+export function onTradeError(err) {
     error('trade-error')
 }
 
-export function sendTradeRequest(trade: BaseTrade) {
+export async function onTradeRejected({ receiver }) {
+    const actor = game.actors.get(receiver.cid)
+    warn('trade-rejected', { name: actor.name }, true)
+}
+
+export function sendTradeRequest(trade) {
     if (trade.receiver.id === game.user.id) {
         acceptRequest(trade)
         return
     }
 
-    socketEmit<TradeRequestPacket>({
+    socketEmit({
         ...trade,
         type: 'trade-request',
     })
 }
 
-function rejectRequest(trade: BaseTrade) {
-    if (trade.sender.id === game.user.id) {
-        onTradeRejected(trade)
-        return
-    }
-
-    socketEmit<TradeRejectPacket>({
-        ...trade,
-        type: 'trade-reject',
-    })
-}
-
-function acceptRequest(trade: BaseTrade) {
+function acceptRequest(trade) {
     if (game.user.isGM) {
         onTradeAccepted(trade)
         return
     }
 
-    socketEmit<TradeAcceptPacket>({
+    socketEmit({
         ...trade,
         type: 'trade-accept',
     })
 }
 
-function sendTradeError({ sender, receiver }: BaseTrade, error: TradeError = 'trade-error') {
+function rejectRequest(trade) {
+    if (trade.sender.id === game.user.id) {
+        onTradeRejected(trade)
+        return
+    }
+
+    socketEmit({
+        ...trade,
+        type: 'trade-reject',
+    })
+}
+
+function sendTradeError({ sender, receiver }, error = 'trade-error') {
     const users = new Set([sender.id, receiver.id])
 
     if (users.has(game.user.id)) {
@@ -123,7 +119,7 @@ function sendTradeError({ sender, receiver }: BaseTrade, error: TradeError = 'tr
 
     if (!users.size) return
 
-    socketEmit<TradeErrorPacket>({
+    socketEmit({
         type: 'trade-error',
         users: Array.from(users),
         error,

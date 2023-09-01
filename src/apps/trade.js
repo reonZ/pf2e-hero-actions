@@ -1,21 +1,14 @@
-import { getHeroActions } from '@src/actions'
-import { sendTradeRequest } from '@src/trade'
-import { getCharacterOwner } from '@utils/foundry/actor'
-import { localize, subLocalize } from '@utils/foundry/localize'
-import { error, warn } from '@utils/foundry/notification'
-import { templatePath } from '@utils/foundry/path'
-import { getFirstGM, getOwner } from '@utils/foundry/user'
+import { getHeroActions } from '../actions'
+import { error, getCharacterOwner, getOwner, localize, subLocalize, templatePath, warn } from '../module'
+import { sendTradeRequest } from '../trade'
 
 export class Trade extends Application {
-    private _actor: CharacterPF2e
-    private _target?: CharacterPF2e
-
-    constructor(actor: CharacterPF2e) {
+    constructor(actor) {
         super({ id: `pf2e-hero-actions-trade-${actor.id}` })
         this._actor = actor
     }
 
-    static get defaultOptions(): ApplicationOptions {
+    static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
             title: localize('templates.trade.title'),
             template: templatePath('trade.hbs'),
@@ -43,7 +36,7 @@ export class Trade extends Application {
         this.render()
     }
 
-    getData(options?: Partial<ApplicationOptions> | undefined): object | Promise<object> {
+    getData(options) {
         return mergeObject(super.getData(), {
             actor: this.actor,
             target: this.target,
@@ -54,7 +47,7 @@ export class Trade extends Application {
         })
     }
 
-    activateListeners(html: JQuery<HTMLElement>): void {
+    activateListeners(html) {
         super.activateListeners(html)
         html.find('select[name="target"]').on('change', this.#onChangeTarget.bind(this))
         html.find('[data-action="description"]').on('click', this.#onDescription.bind(this))
@@ -62,13 +55,13 @@ export class Trade extends Application {
         html.find('[data-action="cancel"]').on('click', () => this.close())
     }
 
-    render(force?: boolean | undefined, options?: RenderOptions | undefined): this | Promise<this> {
+    render(force, options) {
         this.actor.apps[this.appId] = this
         if (this.target) this.target.apps[this.appId] = this
         return super.render(force, options)
     }
 
-    async close(options?: ({ force?: boolean | undefined } & Record<string, unknown>) | undefined): Promise<void> {
+    async close(options) {
         await super.close(options)
         delete this.actor.apps?.[this.appId]
         delete this.target?.apps?.[this.appId]
@@ -88,7 +81,7 @@ export class Trade extends Application {
             return
         }
 
-        let user = getCharacterOwner(this.target, true) ?? getOwner(this.target, true) ?? getFirstGM()
+        let user = getCharacterOwner(this.target, true) ?? getOwner(this.target, true) ?? game.users.activeGM
         if (!user) {
             warn('templates.trade.no-user')
             return
@@ -110,14 +103,14 @@ export class Trade extends Application {
         this.close()
     }
 
-    async #onDescription(event: JQuery.ClickEvent<any, any, HTMLElement>) {
-        const uuid = $(event.currentTarget).siblings('input').val() as CompendiumUUID
-        const entry = await fromUuid<JournalEntry>(uuid)
+    async #onDescription(event) {
+        const uuid = $(event.currentTarget).siblings('input').val()
+        const entry = await fromUuid(uuid)
         entry?.sheet.render(true)
     }
 
-    #onChangeTarget(event: JQuery.ChangeEvent<any, any, HTMLElement>) {
-        const id = (event.currentTarget as HTMLSelectElement).value
-        this.target = game.actors.get<CharacterPF2e>(id)
+    #onChangeTarget(event) {
+        const id = event.currentTarget.value
+        this.target = game.actors.get(id)
     }
 }

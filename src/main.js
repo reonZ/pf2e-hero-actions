@@ -1,41 +1,29 @@
-import { localize } from '@utils/foundry/localize'
-import { getCurrentModule } from '@utils/foundry/module'
-import { getSetting, registerSetting, setSetting } from '@utils/foundry/settings'
-import { isFirstGM } from '@utils/foundry/user'
-import { setModuleID } from '@utils/module'
-import { socketOn } from '@utils/socket'
+import { MODULE_ID, getSetting, isFirstGM, localize, setSetting, socketOn } from './module'
+import { renderCharacterSheetPF2e } from './sheet'
 import {
-    discardHeroActions,
+    getHeroActions,
+    useHeroAction,
+    getHeroActionDetails,
     drawHeroAction,
     drawHeroActions,
-    getHeroActionDetails,
-    getHeroActions,
     sendActionToChat,
+    discardHeroActions,
     tradeHeroAction,
-    useHeroAction,
 } from './actions'
-import { createTable, removeHeroActions } from './api'
-import { refreshSheets, renderCharacterSheetPF2e } from './sheet'
 import { onTradeAccepted, onTradeError, onTradeRejected, onTradeRequest } from './trade'
-
-export const MODULE_ID = 'pf2e-hero-actions'
-setModuleID(MODULE_ID)
-
-Hooks.on('renderCharacterSheetPF2e', renderCharacterSheetPF2e)
+import { createTable, removeHeroActions } from './api'
 
 Hooks.once('init', () => {
     registerSetting({
         name: 'tableUUID',
         type: String,
         default: '',
-        config: true,
     })
 
     registerSetting({
         name: 'trade',
         type: Boolean,
         default: false,
-        config: true,
         onChange: refreshSheets,
     })
 
@@ -43,20 +31,22 @@ Hooks.once('init', () => {
         name: 'private',
         type: Boolean,
         default: false,
-        config: true,
     })
 
     registerSetting({
         name: 'migrated',
         type: Number,
         default: 0,
+        config: false,
     })
 })
 
 Hooks.once('ready', async () => {
-    socketOn(onPacketReceived)
+    socketOn(onSocket)
 
-    getCurrentModule<HeroActionsApi>().api = {
+    const module = game.modules.get(MODULE_ID)
+
+    module.api = {
         getHeroActions,
         useHeroAction,
         getHeroActionDetails,
@@ -68,25 +58,16 @@ Hooks.once('ready', async () => {
     }
 
     if (game.user.isGM) {
-        getCurrentModule<HeroActionsApi>().api.createTable = createTable
-        getCurrentModule<HeroActionsApi>().api.removeHeroActions = removeHeroActions
+        module.api.createTable = createTable
+        module.api.removeHeroActions = removeHeroActions
 
         await manageMigrations()
     }
 })
 
-async function manageMigrations() {
-    const migrated = getSetting<number>('migrated')
+Hooks.on('renderCharacterSheetPF2e', renderCharacterSheetPF2e)
 
-    // pf2e system 5.0.1
-    if (migrated < 1) {
-        ChatMessage.create({ content: localize('migration.system-change'), whisper: game.user.id })
-    }
-
-    setSetting('migrated', 1)
-}
-
-function onPacketReceived(packet: Packet) {
+function onSocket(packet) {
     switch (packet.type) {
         case 'trade-reject':
             if (packet.sender.id !== game.user.id) return
@@ -105,4 +86,34 @@ function onPacketReceived(packet: Packet) {
             onTradeError(packet.error)
             break
     }
+}
+
+async function manageMigrations() {
+    const migrated = getSetting('migrated') ?? 0
+
+    // pf2e system 5.0.1
+    if (migrated < 1) {
+        ChatMessage.create({ content: localize('migration.system-change'), whisper: game.user.id })
+    }
+
+    setSetting('migrated', 1)
+}
+
+function registerSetting(options) {
+    const name = options.name
+    options.scope = options.scope ?? 'world'
+    options.config = options.config ?? true
+    if (options.config) {
+        options.name = `${MODULE_ID}.settings.${name}.name`
+        options.hint = `${MODULE_ID}.settings.${name}.hint`
+    }
+    game.settings.register(MODULE_ID, name, options)
+}
+
+function refreshSheets() {
+    Object.values(ui.windows).forEach(x => {
+        if (x instanceof ActorSheet && x.actor.type === 'character') {
+            x.render(true)
+        }
+    })
 }
