@@ -1,6 +1,14 @@
 .sheet.actor.character .sheet-body .sheet-content {
     [data-tab='actions'] .tab-content .actions-panels [data-tab='encounter'] ol.actions-list.heroActions-list {
         .action {
+            display: flex;
+
+            .item-image {
+                height: 20px;
+                width: 20px;
+                background-position: center;
+            }
+
             .item-controls {
                 > button {
                     text-rendering: optimizeLegibility;

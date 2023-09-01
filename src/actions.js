@@ -1,5 +1,5 @@
 import { Trade } from './apps/trade'
-import { chatUUID, documentUuidFromTableResult, error, getFlag, getSetting, localize, setFlag, warn } from './module'
+import { MODULE_ID, chatUUID, documentUuidFromTableResult, error, getFlag, getSetting, localize, setFlag, warn } from './module'
 
 const JOURNAL_UUID = 'Compendium.pf2e.journals.JournalEntry.BSp4LUSaOmUyjBko'
 export const TABLE_UUID = 'Compendium.pf2e.rollable-tables.RollTable.zgZoI7h0XjjJrrNK'
