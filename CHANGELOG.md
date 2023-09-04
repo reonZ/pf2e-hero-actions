@@ -1,3 +1,7 @@
+# 2.8.1
+
+-   fixed `removeHeroActions` API function and by extension the `Remove Hero Actions` macro error
+
 # 2.8.0
 
 -   this is a system `5.4.0` release
