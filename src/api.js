@@ -50,9 +50,8 @@ export async function removeHeroActions() {
             label: localizeRemove('remove'),
             icon: '<i class="fas fa-trash"></i>',
             callback: html =>
-                html.find <
-                HTMLInputElement >
-                'input[name="actor"]:checked'
+                html
+                    .find('input[name="actor"]:checked')
                     .toArray()
                     .map(x => game.actors.get(x.value))
                     .filter(x => x),
