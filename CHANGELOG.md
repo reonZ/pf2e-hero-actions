@@ -1,3 +1,7 @@
+# 2.8.2
+
+-   fixed hero action description wrapping
+
 # 2.8.1
 
 -   fixed `removeHeroActions` API function and by extension the `Remove Hero Actions` macro error
